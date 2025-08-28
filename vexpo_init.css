@@ -3,192 +3,130 @@ body {
   font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
   font-style: normal;
   line-height: normal;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.header {
+  padding: 25px 25px 0px 25px;
 }
 
 .content {
-  height: 60vh;
-  max-height: 50%;
+  max-width: 100%;
+  max-height: 100%;
+  height: 90vh;
   margin: 0 auto;
   position: sticky;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
   border-radius: 20px;
-  color: #000;
-  font-size: min(2.8vmin,16px);
-  font-style: normal;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 18px;
   font-weight: 400;
-  overflow-y: scroll;
-}
-
-.content::-webkit-scrollbar {
-  width: 16px;
-}
-
-.content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.10);
-  border-radius: 10px;
-}
-
-.content::-webkit-scrollbar-thumb {
-  border-radius: 200px;
-  background: #222;
+  //修正はここから
+  padding-right: 30px; /* 為 scrollbar 留空間 */
+  overflow-y: auto !important; /* 確保滾動生效 */
+  //修正はここまで
 }
 
 p {
-  margin-top: 0rem;
-  margin-bottom: 0rem;
+  margin-top: 0em;
+  margin-bottom: 0em;
 }
 
 ol {
-  margin-top: 0rem;
-  margin-bottom: 0rem;
+  margin-top: 0px;
+  margin-bottom: 0px;
   padding-left: 20px;
 }
 
 ul {
-  margin-top: 0rem;
-  margin-bottom: 0rem;
-  text-indent: -1rem;
-  padding-left: 1rem;
-}
-
-li {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-indent: -1em;
+  padding-left: 1em;
   list-style: none;
 }
 
-input[type=checkbox] {
-  display: none;
+ol.list_parentheses li.list_parentheses {
+  list-style-type: none;
+  counter-increment: cnt;
 }
 
-.agree_checkbox {
-  display: inline-block;
-  padding: 16px 30px;
-  position: relative;
-  width: auto;
-  color: #ccc;
-  font-size: min(3.2vmin,20px);
-}
-
-input[type=checkbox]:checked + .agree_checkbox::after {
-  opacity: 1;
-}
-
-.control {
-  position: relative;
-  margin: 0 auto -10px;
-  max-width: 767px;
-  bottom: 0px;
-  right: 0px;
-  left: 0px;
-}
-
-.control-child {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  text-align: center;
-}
-
-.control button {
-  text-align: center;
-  border: 2px solid rgba(255,255,255,0.4);
-  border-radius: 100px;
-  margin: 0 auto;
-  width: 80%;
-  padding: 16px 8px;
-  color: #FFF;
-  font-family: "A P-OTF A1Gothic StdN";
-  font-size: min(4vmin,27px);
-  font-weight: 500;
-  letter-spacing: 2px;
-}
-
-.control button:enabled {
-  background: #000;
-  border: none;
-}
-
-.control button:disabled {
-  background: #ccc;
-  color: rgba(255,255,255,0.3);
-  border: none;
+ol.list_parentheses li.list_parentheses:before {
+  display: marker;
+  content: "(" counter(cnt) ") ";
 }
 
 .personal {
-  padding: 0px 5% 0px 3%;
+  padding: 0px 25px 20px 20px;
 }
 
 .term {
-  padding: 0px 5% 0px 3%;
+  padding: 0px 25px 20px 20px;
 }
 
 .policy {
-  padding: 0px 5% 0px 3%;
+  padding: 15px 25px 80px 20px;
 }
 
 .c_policy {
-  padding: 0px 5% 0px 3%;
+  padding: 15px 25px 80px 20px;
 }
 
-.content_header1 {
-  padding: 0 5% 0.3rem 3%;
-  text-align: center;
-  font-size: min(4.5vmin,36px);
-  font-weight: 600;
+table {
+  width: 100%;
+  table-layout: fixed;
 }
 
-.content_header2 {
-  padding: 0.3rem 12% 0.4rem 12%;
-  text-align: center;
-  font-size: min(3.5vmin,28px);
-  font-weight: 500;
+td, th {
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
-.content_attention {
-  color: #f00;
-  padding: 0px 15% 1% 15%;
-  text-align: center;
-  font-size: min(3vmin,18px);
-  font-weight: 500;
+#scroll-progress {
+  visibility: hidden;
+  position: fixed;
+  top: 10px;
+  right: 0%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
 }
 
-//修正はここから
-/* Meta Quest 瀏覽器專用自訂 scrollbar */
-@media only screen and (min-device-width: 1280px) and (max-device-width: 1280px) and (-webkit-device-pixel-ratio: 1) {
-  .content.quest-scrollbar {
-      padding-right: 30px; /* 為自訂 scrollbar 留空間 */
-  }
-
-  .content.quest-scrollbar::-webkit-scrollbar {
-      width: 20px; /* 調整 scrollbar 寬度 */
-      background: transparent; /* 透明背景 */
-  }
-
-  .content.quest-scrollbar::-webkit-scrollbar-track {
-      background: url(/* https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png */) no-repeat center center;
-      background-size: cover;
-      border-radius: 0; /* 移除圓角 */
-  }
-
-  .content.quest-scrollbar::-webkit-scrollbar-thumb {
-      background: url(/*https://i.postimg.cc/J43BmkcJ/botton.png*/) no-repeat center center;
-      background-size: cover;
-      border-radius: 0; /* 移除圓角 */
-  }
-
-  .content.quest-scrollbar::-webkit-scrollbar-button:start:decrement {
-      background: url(/*https://i.postimg.cc/d065ncRf/2025-07-11-201925.png */) no-repeat center center;
-      background-size: cover;
-      height: 20px; /* 箭頭高度 */
-      width: 20px; /* 箭頭寬度 */
-      display: block; /* 確保箭頭顯示 */
-  }
-
-  .content.quest-scrollbar::-webkit-scrollbar-button:end:increment {
-      background: url(/*https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png*/) no-repeat center center;
-      background-size: cover;
-      height: 20px; /* 箭頭高度 */
-      width: 20px; /* 箭頭寬度 */
-      display: block; /* 確保箭頭顯示 */
-  }
+.breakable-url {
+  overflow-wrap: break-word;
 }
-//修正はここまで
+
+/* SimpleBar Custom Scrollbar */
+.simplebar-track.simplebar-vertical {
+  background:
+      url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
+      url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
+      url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
+  background-size: 100% auto, 100% auto, 100% auto;
+  width: 20px; 
+  right: 0;
+}
+
+.simplebar-scrollbar {
+  background-image: url('https://i.postimg.cc/J43BmkcJ/botton.png'); 
+    background-size: 80% 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border-radius: 6px;
+    height: 100%; 
+}
+
+.simplebar-scrollbar::before {
+  display: none !important;
+}
+
+.simplebar-track.simplebar-vertical:hover,
+.simplebar-scrollbar:hover {
+  cursor: pointer !important; /* VR 環境的點擊提示 */
+}
