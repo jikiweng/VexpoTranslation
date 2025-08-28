@@ -23,10 +23,6 @@ body {
   font-size: 14px;
   line-height: 18px;
   font-weight: 400;
-  //修正はここから
-  padding-right: 30px; /* 為 scrollbar 留空間 */
-  overflow-y: auto !important; /* 確保滾動生效 */
-  //修正はここまで
 }
 
 p {
@@ -110,6 +106,7 @@ td, th {
   background-size: 100% auto, 100% auto, 100% auto;
   width: 20px; 
   right: 0;
+  z-index: 999;
 }
 
 .simplebar-scrollbar {
@@ -120,15 +117,12 @@ td, th {
     background-color: transparent;
     border-radius: 6px;
     height: 100%; 
-    pointer-events: auto !important; /* 確保可點擊/拖曳 */
+    z-index: 1000;
+    min-height: 30px; /* 確保滑塊有最小高度 */
 }
 
 .simplebar-scrollbar::before {
   display: none !important;
 }
 
-.simplebar-track.simplebar-vertical:hover,
-.simplebar-scrollbar:hover {
-  cursor: pointer !important; /* VR 環境的點擊提示 */
-}
 
