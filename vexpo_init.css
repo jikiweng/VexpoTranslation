@@ -120,6 +120,7 @@ td, th {
     background-color: transparent;
     border-radius: 6px;
     height: 100%; 
+    pointer-events: auto !important; /* 確保可點擊/拖曳 */
 }
 
 .simplebar-scrollbar::before {
@@ -130,3 +131,4 @@ td, th {
 .simplebar-scrollbar:hover {
   cursor: pointer !important; /* VR 環境的點擊提示 */
 }
+
