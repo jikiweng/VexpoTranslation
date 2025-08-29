@@ -9,19 +9,140 @@
     <meta name="cp-ver" content="5.0.0">
 
     <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.min.css">
-    <link rel="stylesheet" href="vexpo_init.css">
+    
+    <style>
+        body {
+            background-color: #fff;
+            font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
+            font-style: normal;
+            line-height: normal;
+            overflow-x: hidden;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+        }
 
-    <script>
-        (() => {
-            const ua = navigator.userAgent.toLowerCase();
-            if (ua.includes("quest")) {
-                const link = document.createElement("link");
-                link.rel = "stylesheet";
-                link.href = "css_init/vexpo_init_mq.css";
-                document.head.appendChild(link);
-            }
-        })();
-    </script>
+        .header {
+            padding: 25px 25px 0px 25px;
+        }
+
+        .content {
+            max-width: 100%;
+            max-height: 100%;
+            height: 90vh;
+            margin: 0 auto;
+            position: sticky;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 400;
+        }
+
+        .term {
+            padding: 0px 25px 20px 20px;
+        }
+
+        #scroll-progress {
+            visibility: hidden;
+            position: fixed;
+            top: 10px;
+            right: 50%;
+            transform: translateX(50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 9999;
+        }
+
+        .simplebar-track.simplebar-vertical {
+            background:
+                url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
+                url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
+                url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
+            background-size: 100% auto, 100% auto, 100% auto;
+            width: 80px !important;
+            right: 0;
+            opacity: 1 !important;
+        }
+
+        .simplebar-scrollbar {
+            background-image: url('https://i.postimg.cc/J43BmkcJ/botton.png');
+            background-size: 80% 50%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: transparent;
+            border-radius: 6px;
+            opacity: 1 !important;
+        }
+
+        .simplebar-scrollbar::before {
+            display: none !important;
+        }
+
+        .quest-scrollbar {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 80px;
+            height: 100%;
+            z-index: 1000;
+        }
+
+        .quest-scroll-up, 
+        .quest-scroll-down, 
+        .quest-scroll-handle {
+            position: absolute;
+            width: 100%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .quest-scroll-up {
+            top: 0;
+            height: 80px;
+            background: url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat center;
+            background-size: 100% 100%;
+        }
+
+        .quest-scroll-down {
+            bottom: 0;
+            height: 80px;
+            background: url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat center;
+            background-size: 100% 100%;
+        }
+
+        .quest-scroll-track {
+            position: absolute;
+            top: 80px;
+            bottom: 80px;
+            width: 100%;
+            background: url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
+            background-size: 100% auto;
+        }
+
+        .quest-scroll-handle {
+            height: 100px;
+            background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
+            background-size: 80% 50%;
+            top: 0;
+        }
+
+        .quest-scroll-up:hover,
+        .quest-scroll-down:hover,
+        .quest-scroll-handle:hover {
+            border-color: #007bff;
+        }
+
+        .quest-scroll-up:active,
+        .quest-scroll-down:active,
+        .quest-scroll-handle:active {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+    </style>
 
     <title>利用規約・プライバシーポリシー・Cookieポリシー</title>
 </head>
@@ -882,6 +1003,8 @@ V万博アプリで使用されるクッキー<br/>
 </p><br/>
         </div>
     </div>
+	
+    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
 
     <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
     <script>
@@ -914,16 +1037,191 @@ V万博アプリで使用されるクッキー<br/>
                 }
             });
 
-            if (userAgent.includes("quest")) {
+            if (userAgent.includes("quest") || userAgent.includes("oculusbrowser")) {
+                console.log("Quest browser detected");
                 document.getElementById("scroll-progress").style.visibility = "visible";
+                
                 scrollElement.addEventListener('scroll', function() {
                     var documentHeight = scrollElement.scrollHeight;
                     var scrollPosition = scrollElement.scrollTop + scrollElement.clientHeight;
                     var scrollPercentage = (scrollPosition / documentHeight) * 100;
                     document.getElementById('scroll-progress').textContent = Math.round(scrollPercentage) + '%';
                 });
-            }
         });
+		function initQuestScrolling() {
+            console.log("Initializing Quest scrolling");
+            
+            const contentWrapper = document.querySelector('#content-wrapper');
+            const scrollWrapper = document.querySelector('.simplebar-content-wrapper');
+            
+            if (!contentWrapper || !scrollWrapper) {
+                console.error("Required elements not found");
+                return;
+            }
+            
+            if (contentWrapper.querySelector('.quest-scrollbar')) {
+                console.log("Quest scrollbar already exists");
+                return;
+            }
+            
+            const originalTrack = contentWrapper.querySelector('.simplebar-track.simplebar-vertical');
+            if (originalTrack) {
+                originalTrack.style.display = 'none';
+            }
+            
+            createQuestScrollbar(contentWrapper, scrollWrapper);
+        }
+        
+        function createQuestScrollbar(contentWrapper, scrollWrapper) {
+            console.log("Creating Quest scrollbar");
+            
+            const questScrollbar = document.createElement('div');
+            questScrollbar.className = 'quest-scrollbar';
+            
+            const upButton = document.createElement('div');
+            upButton.className = 'quest-scroll-up';
+            upButton.title = 'Scroll Up';
+            
+            const downButton = document.createElement('div');
+            downButton.className = 'quest-scroll-down';
+            downButton.title = 'Scroll Down';
+            
+            const track = document.createElement('div');
+            track.className = 'quest-scroll-track';
+            
+            const handle = document.createElement('div');
+            handle.className = 'quest-scroll-handle';
+            handle.title = 'Drag to scroll';
+            
+            track.appendChild(handle);
+            questScrollbar.appendChild(upButton);
+            questScrollbar.appendChild(track);
+            questScrollbar.appendChild(downButton);
+            
+            contentWrapper.style.position = 'relative';
+            contentWrapper.appendChild(questScrollbar);
+            
+            addQuestEventListeners(upButton, downButton, handle, track, scrollWrapper);
+            
+            updateHandlePosition(scrollWrapper, handle, track);
+            
+            scrollWrapper.addEventListener('scroll', () => {
+                updateHandlePosition(scrollWrapper, handle, track);
+            });
+            
+            console.log("Quest scrollbar created successfully");
+        }
+        
+        function addQuestEventListeners(upButton, downButton, handle, track, scrollWrapper) {
+            console.log("Adding Quest event listeners");
+            
+            const scrollStep = 100;
+            let isDragging = false;
+            let startY = 0;
+            let startScrollTop = 0;
+            
+            function scrollUp(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
+                console.log("Scroll up clicked, new position:", scrollWrapper.scrollTop);
+            }
+            
+            function scrollDown(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+                scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
+                console.log("Scroll down clicked, new position:", scrollWrapper.scrollTop);
+            }
+            
+            const eventTypes = ['click', 'mousedown', 'touchstart', 'pointerdown'];
+            
+            eventTypes.forEach(eventType => {
+                upButton.addEventListener(eventType, scrollUp, { passive: false });
+                downButton.addEventListener(eventType, scrollDown, { passive: false });
+            });
+            
+            function startDrag(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                isDragging = true;
+                startY = e.clientY || (e.touches && e.touches[0].clientY);
+                startScrollTop = scrollWrapper.scrollTop;
+                
+                handle.style.borderColor = '#007bff';
+                document.body.style.userSelect = 'none';
+                
+                console.log("Drag started at Y:", startY);
+            }
+            
+            function handleDrag(e) {
+                if (!isDragging) return;
+                
+                e.preventDefault();
+                const currentY = e.clientY || (e.touches && e.touches[0].clientY);
+                const deltaY = currentY - startY;
+                
+                const trackHeight = track.clientHeight - handle.clientHeight;
+                const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+                const scrollRatio = maxScroll / trackHeight;
+                
+                const newScrollTop = Math.max(0, Math.min(maxScroll, startScrollTop + deltaY * scrollRatio));
+                scrollWrapper.scrollTop = newScrollTop;
+            }
+            
+            function endDrag(e) {
+                if (isDragging) {
+                    isDragging = false;
+                    handle.style.borderColor = 'transparent';
+                    document.body.style.userSelect = '';
+                    console.log("Drag ended");
+                }
+            }
+            
+            handle.addEventListener('mousedown', startDrag, { passive: false });
+            handle.addEventListener('touchstart', startDrag, { passive: false });
+            handle.addEventListener('pointerdown', startDrag, { passive: false });
+            
+            document.addEventListener('mousemove', handleDrag, { passive: false });
+            document.addEventListener('touchmove', handleDrag, { passive: false });
+            document.addEventListener('pointermove', handleDrag, { passive: false });
+            
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+            document.addEventListener('pointerup', endDrag);
+            
+            track.addEventListener('click', function(e) {
+                if (e.target === handle) return;
+                
+                e.preventDefault();
+                const rect = track.getBoundingClientRect();
+                const clickY = e.clientY - rect.top;
+                const trackHeight = track.clientHeight;
+                const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+                
+                const targetScrollTop = (clickY / trackHeight) * maxScroll;
+                scrollWrapper.scrollTop = Math.max(0, Math.min(maxScroll, targetScrollTop));
+                
+                console.log("Track clicked, jumping to:", scrollWrapper.scrollTop);
+            }, { passive: false });
+        }
+        
+        function updateHandlePosition(scrollWrapper, handle, track) {
+            const scrollTop = scrollWrapper.scrollTop;
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            const trackHeight = track.clientHeight;
+            const handleHeight = handle.clientHeight;
+            
+            if (maxScroll > 0) {
+                const scrollRatio = scrollTop / maxScroll;
+                const maxHandleTop = trackHeight - handleHeight;
+                const handleTop = scrollRatio * maxHandleTop;
+                
+                handle.style.top = Math.max(0, Math.min(maxHandleTop, handleTop)) + 'px';
+            }
+        }
     </script>
 </body>
 </html>
