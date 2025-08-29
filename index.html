@@ -9,169 +9,11 @@
     <meta name="cp-ver" content="5.0.0">
 
     <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.min.css">
-    
-    <style>
-        body {
-            background-color: #fff;
-            font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
-            font-style: normal;
-            line-height: normal;
-            overflow-x: hidden;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0;
-        }
-
-        .content {
-            max-width: 100%;
-            max-height: 100%;
-            height: 90vh;
-            margin: 0 auto;
-            position: relative;
-            background-color: rgba(255, 255, 255, 0.7);
-            border: none;
-            border-radius: 20px;
-            font-size: 14px;
-            line-height: 18px;
-            font-weight: 400;
-        }
-
-        .term {
-            padding: 0px 25px 20px 20px;
-        }
-
-        #scroll-progress {
-            visibility: visible;
-            position: fixed;
-            top: 10px;
-            right: 50%;
-            transform: translateX(50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 9999;
-        }
-
-        #vr-enter-button {
-            position: fixed;
-            top: 50px;
-            right: 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 9999;
-        }
-
-        #vr-enter-button:hover {
-            background: #0056b3;
-        }
-
-        /* 隱藏原始滾動條 */
-        .simplebar-track.simplebar-vertical {
-            display: none !important;
-        }
-
-        /* 自定義滾動條 */
-        .custom-scrollbar {
-            position: absolute;
-            right: 10px;
-            top: 0;
-            width: 80px;
-            height: 100%;
-            z-index: 1000;
-        }
-
-        .scroll-track {
-            position: absolute;
-            top: 0;
-            width: 80px;
-            height: 100%;
-            background:
-                url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
-                url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
-                url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
-            background-size: 100% 80px, 100% 80px, 100% auto;
-        }
-
-        .scroll-up-area,
-        .scroll-down-area {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            cursor: pointer;
-            z-index: 1002;
-        }
-
-        .scroll-up-area {
-            top: 0;
-        }
-
-        .scroll-down-area {
-            bottom: 0;
-        }
-
-        .scroll-handle {
-            position: absolute;
-            width: 80px;
-            height: 120px;
-            background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
-            background-size: 80% 50%;
-            cursor: grab;
-            z-index: 1003;
-            border: 2px solid rgba(0, 123, 255, 0.3);
-            border-radius: 8px;
-            transition: all 0.2s;
-            top: 80px;
-        }
-
-        .scroll-handle.active {
-            border-color: #007bff;
-            background-color: rgba(0, 123, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
-        }
-
-        .vr-status {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 9999;
-        }
-
-        /* VR 模式下的特殊樣式 */
-        .vr-mode .scroll-handle {
-            border-width: 4px;
-            height: 150px;
-        }
-
-        .vr-mode .scroll-up-area,
-        .vr-mode .scroll-down-area {
-            border: 2px solid transparent;
-        }
-
-        .vr-mode .scroll-up-area:hover,
-        .vr-mode .scroll-down-area:hover {
-            border-color: #007bff;
-            background-color: rgba(0, 123, 255, 0.1);
-        }
-    </style>
 
     <title>利用規約・プライバシーポリシー・Cookieポリシー</title>
 </head>
 
 <body>
-	<button id="vr-enter-button">進入 VR 模式</button>
-    <div id="vr-status" class="vr-status">狀態: 正常瀏覽模式</div>
-
     <div id="content-wrapper" data-simplebar class="content" data-simplebar-auto-hide="false"
     data-simplebar-scrollbar-min-size="80" data-simplebar-scrollbar-max-size="80">
         <div id="scroll-progress">0%</div>
@@ -1382,7 +1224,6 @@ V万博アプリで使用されるクッキー<br/>
             }
         }
 
-        // 更新滾動進度
         function updateScrollProgress() {
             if (!scrollWrapper) return;
             
