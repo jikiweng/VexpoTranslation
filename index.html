@@ -9,29 +9,32 @@
     <meta name="cp-ver" content="5.0.0">
 
     <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.min.css">
-
-	<style>
+    
+    <style>
         body {
-  background-color: #fff;
-  font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
-  font-style: normal;
-  line-height: normal;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-}
+            background-color: #fff;
+            font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
+            font-style: normal;
+            line-height: normal;
+            overflow-x: hidden;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+        }
 
-.content {
-  height: 60vh;
-  max-height: 50%;
-  margin: 0 auto;
-  position: sticky;
-  border-radius: 20px;
-  color: #000;
-  font-size: min(2.8vmin,16px);
-  font-style: normal;
-  line-height: 16px;
-  font-weight: 400;
-  overflow-y: scroll;
-}
+        .content {
+            max-width: 100%;
+            max-height: 100%;
+            height: 90vh;
+            margin: 0 auto;
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 400;
+        }
 
         .term {
             padding: 0px 25px 20px 20px;
@@ -50,15 +53,17 @@
             z-index: 9999;
         }
 
+        /* 隱藏原始滾動條 */
         .simplebar-track.simplebar-vertical {
             display: none !important;
         }
 
+        /* 自定義滾動條 */
         .custom-scrollbar {
             position: absolute;
             right: 10px;
             top: 0;
-            width: 80px;
+            width: 40px;
             height: 100%;
             z-index: 1000;
         }
@@ -66,20 +71,20 @@
         .scroll-track {
             position: absolute;
             top: 0;
-            width: 80px;
+            width: 40px;
             height: 100%;
             background:
                 url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
                 url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
                 url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
-            background-size: 100% 80px, 100% 80px, 100% auto;
+            background-size: 100% 40px, 100% 40px, 100% auto;
         }
 
         .scroll-up-area,
         .scroll-down-area {
             position: absolute;
-            width: 80px;
-            height: 80px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
             z-index: 1002;
         }
@@ -94,16 +99,16 @@
 
         .scroll-handle {
             position: absolute;
-            width: 80px;
+            width: 40px;
             height: 120px;
             background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
-            background-size: 80% 50%;
+            background-size: 80% 100%;
             cursor: grab;
             z-index: 1003;
             border: 2px solid rgba(0, 123, 255, 0.3);
             border-radius: 8px;
             transition: all 0.2s;
-            top: 80px;
+            top: 40px;
         }
 
         .scroll-handle.active {
@@ -124,6 +129,7 @@
             z-index: 9999;
         }
 
+        /* VR 模式下的特殊樣式 */
         .vr-mode .scroll-handle {
             border-width: 4px;
             height: 150px;
@@ -140,7 +146,7 @@
             background-color: rgba(0, 123, 255, 0.1);
         }
     </style>
-
+	
     <title>利用規約・プライバシーポリシー・Cookieポリシー</title>
 </head>
 
