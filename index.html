@@ -22,16 +22,12 @@
             padding: 0;
         }
 
-        .header {
-            padding: 25px 25px 0px 25px;
-        }
-
         .content {
             max-width: 100%;
             max-height: 100%;
             height: 90vh;
             margin: 0 auto;
-            position: sticky;
+            position: relative;
             background-color: rgba(255, 255, 255, 0.7);
             border: none;
             border-radius: 20px;
@@ -45,7 +41,7 @@
         }
 
         #scroll-progress {
-            visibility: hidden;
+            visibility: visible;
             position: fixed;
             top: 10px;
             right: 50%;
@@ -57,90 +53,110 @@
             z-index: 9999;
         }
 
+        /* 隱藏原始滾動條 */
         .simplebar-track.simplebar-vertical {
-            background:
-                url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
-                url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
-                url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
-            background-size: 100% auto, 100% auto, 100% auto;
-            width: 80px !important;
-            right: 0;
-            opacity: 1 !important;
-        }
-
-        .simplebar-scrollbar {
-            background-image: url('https://i.postimg.cc/J43BmkcJ/botton.png');
-            background-size: 80% 50%;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-color: transparent;
-            border-radius: 6px;
-            opacity: 1 !important;
-        }
-
-        .simplebar-scrollbar::before {
             display: none !important;
         }
 
-        .quest-scrollbar {
+        /* 自定義 Meta Quest 滾動條 */
+        .quest-scrollbar-container {
             position: absolute;
             right: 0;
             top: 0;
-            width: 80px;
+            width: 100px;
             height: 100%;
             z-index: 1000;
-        }
-
-        .quest-scroll-up, 
-        .quest-scroll-down, 
-        .quest-scroll-handle {
-            position: absolute;
-            width: 100%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
-        .quest-scroll-up {
-            top: 0;
-            height: 80px;
-            background: url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat center;
-            background-size: 100% 100%;
-        }
-
-        .quest-scroll-down {
-            bottom: 0;
-            height: 80px;
-            background: url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat center;
-            background-size: 100% 100%;
+            pointer-events: auto;
         }
 
         .quest-scroll-track {
             position: absolute;
-            top: 80px;
-            bottom: 80px;
-            width: 100%;
-            background: url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
-            background-size: 100% auto;
+            right: 10px;
+            top: 0;
+            width: 80px;
+            height: 100%;
+            background:
+                url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
+                url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
+                url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
+            background-size: 100% 80px, 100% 80px, 100% auto;
+        }
+
+        .quest-scroll-up,
+        .quest-scroll-down {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            right: 10px;
+            cursor: pointer;
+            z-index: 1002;
+            
+            /* VR 控制器優化 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .quest-scroll-up {
+            top: 0;
+            background: transparent;
+        }
+
+        .quest-scroll-down {
+            bottom: 0;
+            background: transparent;
         }
 
         .quest-scroll-handle {
-            height: 100px;
+            position: absolute;
+            right: 10px;
+            width: 80px;
+            height: 120px;
             background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
             background-size: 80% 50%;
-            top: 0;
+            cursor: grab;
+            z-index: 1003;
+            
+            /* VR 控制器專用樣式 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            touch-action: none;
+            
+            /* 增強可見度 */
+            border: 2px solid rgba(0, 123, 255, 0.3);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .quest-scroll-handle:hover {
+            border-color: rgba(0, 123, 255, 0.8);
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .quest-scroll-handle.dragging {
+            cursor: grabbing;
+            border-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
         }
 
         .quest-scroll-up:hover,
-        .quest-scroll-down:hover,
-        .quest-scroll-handle:hover {
-            border-color: #007bff;
+        .quest-scroll-down:hover {
+            background-color: rgba(0, 123, 255, 0.1);
         }
 
         .quest-scroll-up:active,
-        .quest-scroll-down:active,
-        .quest-scroll-handle:active {
-            background-color: rgba(0, 123, 255, 0.1);
+        .quest-scroll-down:active {
+            background-color: rgba(0, 123, 255, 0.3);
+        }
+
+        /* 防止文字選擇 */
+        .content * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
         }
     </style>
 
@@ -1004,224 +1020,311 @@ V万博アプリで使用されるクッキー<br/>
         </div>
     </div>
 	
-    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
-
-    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
+     <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
+    
     <script>
+        console.log("=== Meta Quest VR Scrollbar Initialize ===");
+        console.log("User Agent:", navigator.userAgent);
+        
         let scrolledTermInfo = "";
-        let userAgent = window.navigator.userAgent.toLowerCase();
+        let userAgent = navigator.userAgent.toLowerCase();
+        let questScrollbar = null;
+        
+        // VR 控制器狀態
+        let vrControllerState = {
+            isPressed: false,
+            isDragging: false,
+            startY: 0,
+            startScrollTop: 0,
+            currentTarget: null
+        };
 
         window.addEventListener('load', function() {
-            const scrollElement = document.querySelector('#content-wrapper').querySelector('.simplebar-content-wrapper');
-
-            const bodyHeight = scrollElement.scrollHeight;
-            const windowHeight = scrollElement.clientHeight;
-            const bottomPoint = bodyHeight - windowHeight;
-
-            var url = window.location.href;
-            var tsVer = document.head.querySelector('[name=ts-ver][content]')?.content || "";
-            var ppVer = document.head.querySelector('[name=pp-ver][content]')?.content || "";
-            var cpVer = document.head.querySelector('[name=cp-ver][content]')?.content || "";
-            var pdVer = document.head.querySelector('[name=pd-ver][content]')?.content || "";
-            var tfVer = document.head.querySelector('[name=tf-ver][content]')?.content || "";
-            var termInfo = `${url}?ts-ver=${tsVer}&pp-ver=${ppVer}&cp-ver=${cpVer}&pd-ver=${pdVer}&tf-ver=${tfVer}`;
-
-            if (bodyHeight <= windowHeight) {
-                scrolledTermInfo = termInfo;
-            }
-
-            scrollElement.addEventListener('scroll', () => {
-                const currentPos = scrollElement.scrollTop;
-                if (bottomPoint <= currentPos) {
-                    scrolledTermInfo = termInfo;
+            console.log("Window loaded, initializing...");
+            
+            // 等待 SimpleBar 初始化
+            setTimeout(() => {
+                initVRScrollbar();
+            }, 500);
+            
+            // 基本滾動進度處理
+            const contentWrapper = document.querySelector('#content-wrapper');
+            if (contentWrapper) {
+                const scrollElement = contentWrapper.querySelector('.simplebar-content-wrapper');
+                if (scrollElement) {
+                    scrollElement.addEventListener('scroll', updateScrollProgress);
                 }
-            });
-
-            if (userAgent.includes("quest") || userAgent.includes("oculusbrowser")) {
-                console.log("Quest browser detected");
-                document.getElementById("scroll-progress").style.visibility = "visible";
-                
-                scrollElement.addEventListener('scroll', function() {
-                    var documentHeight = scrollElement.scrollHeight;
-                    var scrollPosition = scrollElement.scrollTop + scrollElement.clientHeight;
-                    var scrollPercentage = (scrollPosition / documentHeight) * 100;
-                    document.getElementById('scroll-progress').textContent = Math.round(scrollPercentage) + '%';
-                });
+            }
         });
-		function initQuestScrolling() {
-            console.log("Initializing Quest scrolling");
+		
+		function updateScrollProgress() {
+            const scrollElement = document.querySelector('.simplebar-content-wrapper');
+            if (!scrollElement) return;
+            
+            const documentHeight = scrollElement.scrollHeight;
+            const scrollPosition = scrollElement.scrollTop + scrollElement.clientHeight;
+            const scrollPercentage = (scrollPosition / documentHeight) * 100;
+            
+            const progressElement = document.getElementById('scroll-progress');
+            if (progressElement) {
+                progressElement.textContent = Math.round(scrollPercentage) + '%';
+            }
+        }
+        
+        function initVRScrollbar() {
+            console.log("Initializing VR scrollbar...");
             
             const contentWrapper = document.querySelector('#content-wrapper');
             const scrollWrapper = document.querySelector('.simplebar-content-wrapper');
             
             if (!contentWrapper || !scrollWrapper) {
                 console.error("Required elements not found");
+                setTimeout(initVRScrollbar, 1000); // 重試
                 return;
             }
             
-            if (contentWrapper.querySelector('.quest-scrollbar')) {
-                console.log("Quest scrollbar already exists");
-                return;
-            }
+            console.log("Creating VR scrollbar elements...");
             
-            const originalTrack = contentWrapper.querySelector('.simplebar-track.simplebar-vertical');
-            if (originalTrack) {
-                originalTrack.style.display = 'none';
-            }
+            // 創建滾動條容器
+            const scrollbarContainer = document.createElement('div');
+            scrollbarContainer.className = 'quest-scrollbar-container';
             
-            createQuestScrollbar(contentWrapper, scrollWrapper);
-        }
-        
-        function createQuestScrollbar(contentWrapper, scrollWrapper) {
-            console.log("Creating Quest scrollbar");
-            
-            const questScrollbar = document.createElement('div');
-            questScrollbar.className = 'quest-scrollbar';
-            
-            const upButton = document.createElement('div');
-            upButton.className = 'quest-scroll-up';
-            upButton.title = 'Scroll Up';
-            
-            const downButton = document.createElement('div');
-            downButton.className = 'quest-scroll-down';
-            downButton.title = 'Scroll Down';
-            
+            // 創建背景軌道
             const track = document.createElement('div');
             track.className = 'quest-scroll-track';
             
+            // 創建上箭頭點擊區
+            const upButton = document.createElement('div');
+            upButton.className = 'quest-scroll-up';
+            upButton.setAttribute('data-scroll-action', 'up');
+            
+            // 創建下箭頭點擊區
+            const downButton = document.createElement('div');
+            downButton.className = 'quest-scroll-down';
+            downButton.setAttribute('data-scroll-action', 'down');
+            
+            // 創建拖拽手柄
             const handle = document.createElement('div');
             handle.className = 'quest-scroll-handle';
-            handle.title = 'Drag to scroll';
+            handle.setAttribute('data-scroll-action', 'drag');
             
-            track.appendChild(handle);
-            questScrollbar.appendChild(upButton);
-            questScrollbar.appendChild(track);
-            questScrollbar.appendChild(downButton);
+            // 組裝元素
+            scrollbarContainer.appendChild(track);
+            scrollbarContainer.appendChild(upButton);
+            scrollbarContainer.appendChild(downButton);
+            scrollbarContainer.appendChild(handle);
             
-            contentWrapper.style.position = 'relative';
-            contentWrapper.appendChild(questScrollbar);
+            contentWrapper.appendChild(scrollbarContainer);
             
-            addQuestEventListeners(upButton, downButton, handle, track, scrollWrapper);
+            questScrollbar = {
+                container: scrollbarContainer,
+                track: track,
+                upButton: upButton,
+                downButton: downButton,
+                handle: handle,
+                scrollWrapper: scrollWrapper
+            };
             
-            updateHandlePosition(scrollWrapper, handle, track);
+            // 初始化手柄位置
+            updateHandlePosition();
             
-            scrollWrapper.addEventListener('scroll', () => {
-                updateHandlePosition(scrollWrapper, handle, track);
-            });
+            // 添加 VR 控制器事件
+            addVRControllerEvents();
             
-            console.log("Quest scrollbar created successfully");
+            // 監聽滾動更新手柄位置
+            scrollWrapper.addEventListener('scroll', updateHandlePosition);
+            
+            console.log("VR scrollbar initialized successfully!");
         }
         
-        function addQuestEventListeners(upButton, downButton, handle, track, scrollWrapper) {
-            console.log("Adding Quest event listeners");
+        function addVRControllerEvents() {
+            if (!questScrollbar) return;
             
-            const scrollStep = 100;
-            let isDragging = false;
-            let startY = 0;
-            let startScrollTop = 0;
+            console.log("Adding VR controller events...");
             
-            function scrollUp(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
-                console.log("Scroll up clicked, new position:", scrollWrapper.scrollTop);
+            const { upButton, downButton, handle, scrollWrapper } = questScrollbar;
+            
+            // VR 控制器專用事件處理
+            function handleVRInput(element, action) {
+                // 使用多種事件類型確保 VR 控制器響應
+                const events = [
+                    'mousedown', 'mouseup', 'click',
+                    'touchstart', 'touchend', 'touchmove',
+                    'pointerdown', 'pointerup', 'pointermove',
+                    'selectstart', 'selectend'  // WebXR 特殊事件
+                ];
+                
+                events.forEach(eventType => {
+                    element.addEventListener(eventType, (e) => {
+                        handleVREvent(e, action);
+                    }, { passive: false });
+                });
             }
             
-            function scrollDown(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-                scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
-                console.log("Scroll down clicked, new position:", scrollWrapper.scrollTop);
-            }
+            // 為所有控制元素添加事件
+            handleVRInput(upButton, 'up');
+            handleVRInput(downButton, 'down');
+            handleVRInput(handle, 'drag');
             
-            const eventTypes = ['click', 'mousedown', 'touchstart', 'pointerdown'];
+            // 添加全域拖拽監聽
+            document.addEventListener('mousemove', handleGlobalDrag, { passive: false });
+            document.addEventListener('touchmove', handleGlobalDrag, { passive: false });
+            document.addEventListener('pointermove', handleGlobalDrag, { passive: false });
             
-            eventTypes.forEach(eventType => {
-                upButton.addEventListener(eventType, scrollUp, { passive: false });
-                downButton.addEventListener(eventType, scrollDown, { passive: false });
-            });
+            document.addEventListener('mouseup', handleGlobalRelease);
+            document.addEventListener('touchend', handleGlobalRelease);
+            document.addEventListener('pointerup', handleGlobalRelease);
+        }
+        
+        function handleVREvent(event, action) {
+            event.preventDefault();
+            event.stopPropagation();
             
-            function startDrag(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                isDragging = true;
-                startY = e.clientY || (e.touches && e.touches[0].clientY);
-                startScrollTop = scrollWrapper.scrollTop;
-                
-                handle.style.borderColor = '#007bff';
-                document.body.style.userSelect = 'none';
-                
-                console.log("Drag started at Y:", startY);
-            }
+            console.log(`VR Event: ${event.type} on ${action}`);
             
-            function handleDrag(e) {
-                if (!isDragging) return;
-                
-                e.preventDefault();
-                const currentY = e.clientY || (e.touches && e.touches[0].clientY);
-                const deltaY = currentY - startY;
-                
-                const trackHeight = track.clientHeight - handle.clientHeight;
-                const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-                const scrollRatio = maxScroll / trackHeight;
-                
-                const newScrollTop = Math.max(0, Math.min(maxScroll, startScrollTop + deltaY * scrollRatio));
-                scrollWrapper.scrollTop = newScrollTop;
-            }
+            const isStartEvent = event.type.includes('down') || event.type.includes('start');
+            const isEndEvent = event.type.includes('up') || event.type.includes('end');
+            const isMoveEvent = event.type.includes('move');
+            const isClickEvent = event.type === 'click';
             
-            function endDrag(e) {
-                if (isDragging) {
-                    isDragging = false;
-                    handle.style.borderColor = 'transparent';
-                    document.body.style.userSelect = '';
-                    console.log("Drag ended");
+            if (action === 'up' && (isClickEvent || isStartEvent)) {
+                scrollUp();
+            } else if (action === 'down' && (isClickEvent || isStartEvent)) {
+                scrollDown();
+            } else if (action === 'drag') {
+                if (isStartEvent) {
+                    startDrag(event);
+                } else if (isEndEvent) {
+                    endDrag();
                 }
             }
-            
-            handle.addEventListener('mousedown', startDrag, { passive: false });
-            handle.addEventListener('touchstart', startDrag, { passive: false });
-            handle.addEventListener('pointerdown', startDrag, { passive: false });
-            
-            document.addEventListener('mousemove', handleDrag, { passive: false });
-            document.addEventListener('touchmove', handleDrag, { passive: false });
-            document.addEventListener('pointermove', handleDrag, { passive: false });
-            
-            document.addEventListener('mouseup', endDrag);
-            document.addEventListener('touchend', endDrag);
-            document.addEventListener('pointerup', endDrag);
-            
-            track.addEventListener('click', function(e) {
-                if (e.target === handle) return;
-                
-                e.preventDefault();
-                const rect = track.getBoundingClientRect();
-                const clickY = e.clientY - rect.top;
-                const trackHeight = track.clientHeight;
-                const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-                
-                const targetScrollTop = (clickY / trackHeight) * maxScroll;
-                scrollWrapper.scrollTop = Math.max(0, Math.min(maxScroll, targetScrollTop));
-                
-                console.log("Track clicked, jumping to:", scrollWrapper.scrollTop);
-            }, { passive: false });
         }
         
-        function updateHandlePosition(scrollWrapper, handle, track) {
+        function scrollUp() {
+            if (!questScrollbar) return;
+            
+            const { scrollWrapper } = questScrollbar;
+            const scrollStep = 200; // 更大的步長以便快速跳轉
+            
+            scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
+            console.log("Scroll up to:", scrollWrapper.scrollTop);
+            
+            // 視覺反饋
+            questScrollbar.upButton.style.backgroundColor = 'rgba(0, 123, 255, 0.3)';
+            setTimeout(() => {
+                questScrollbar.upButton.style.backgroundColor = '';
+            }, 200);
+        }
+        
+        function scrollDown() {
+            if (!questScrollbar) return;
+            
+            const { scrollWrapper } = questScrollbar;
+            const scrollStep = 200;
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            
+            scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
+            console.log("Scroll down to:", scrollWrapper.scrollTop);
+            
+            // 視覺反饋
+            questScrollbar.downButton.style.backgroundColor = 'rgba(0, 123, 255, 0.3)';
+            setTimeout(() => {
+                questScrollbar.downButton.style.backgroundColor = '';
+            }, 200);
+        }
+        
+        function startDrag(event) {
+            if (!questScrollbar) return;
+            
+            console.log("Start dragging");
+            
+            vrControllerState.isDragging = true;
+            vrControllerState.startY = event.clientY || (event.touches && event.touches[0].clientY) || event.pageY || 0;
+            vrControllerState.startScrollTop = questScrollbar.scrollWrapper.scrollTop;
+            
+            questScrollbar.handle.classList.add('dragging');
+            document.body.style.userSelect = 'none';
+        }
+        
+        function handleGlobalDrag(event) {
+            if (!vrControllerState.isDragging || !questScrollbar) return;
+            
+            event.preventDefault();
+            
+            const currentY = event.clientY || (event.touches && event.touches[0].clientY) || event.pageY || 0;
+            const deltaY = currentY - vrControllerState.startY;
+            
+            // 計算滾動比例 - 這是關鍵！
+            const trackHeight = questScrollbar.container.clientHeight - 160; // 減去上下箭頭高度
+            const contentHeight = questScrollbar.scrollWrapper.scrollHeight;
+            const viewportHeight = questScrollbar.scrollWrapper.clientHeight;
+            const maxScrollTop = contentHeight - viewportHeight;
+            
+            // 將控制器移動距離轉換為滾動距離
+            const scrollRatio = maxScrollTop / trackHeight;
+            const newScrollTop = Math.max(0, Math.min(maxScrollTop, vrControllerState.startScrollTop + deltaY * scrollRatio));
+            
+            questScrollbar.scrollWrapper.scrollTop = newScrollTop;
+            
+            console.log(`Dragging: deltaY=${deltaY}, newScrollTop=${newScrollTop}`);
+        }
+        
+        function handleGlobalRelease(event) {
+            if (vrControllerState.isDragging) {
+                endDrag();
+            }
+        }
+        
+        function endDrag() {
+            if (!vrControllerState.isDragging) return;
+            
+            console.log("End dragging");
+            
+            vrControllerState.isDragging = false;
+            vrControllerState.startY = 0;
+            vrControllerState.startScrollTop = 0;
+            
+            if (questScrollbar) {
+                questScrollbar.handle.classList.remove('dragging');
+            }
+            
+            document.body.style.userSelect = '';
+        }
+        
+        function updateHandlePosition() {
+            if (!questScrollbar) return;
+            
+            const { scrollWrapper, handle, container } = questScrollbar;
+            
             const scrollTop = scrollWrapper.scrollTop;
             const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-            const trackHeight = track.clientHeight;
+            const containerHeight = container.clientHeight;
             const handleHeight = handle.clientHeight;
+            
+            // 可用軌道高度（減去上下箭頭）
+            const trackHeight = containerHeight - 160; // 80px * 2 for arrows
+            const maxHandleTop = trackHeight - handleHeight;
             
             if (maxScroll > 0) {
                 const scrollRatio = scrollTop / maxScroll;
-                const maxHandleTop = trackHeight - handleHeight;
-                const handleTop = scrollRatio * maxHandleTop;
+                const handleTop = 80 + scrollRatio * maxHandleTop; // 80px offset for top arrow
                 
-                handle.style.top = Math.max(0, Math.min(maxHandleTop, handleTop)) + 'px';
+                handle.style.top = Math.max(80, Math.min(80 + maxHandleTop, handleTop)) + 'px';
+            } else {
+                handle.style.top = '80px';
             }
         }
+        
+        // 調試用：每5秒檢查狀態
+        setInterval(() => {
+            if (questScrollbar) {
+                console.log("VR Scrollbar Status:", {
+                    scrollTop: questScrollbar.scrollWrapper.scrollTop,
+                    maxScroll: questScrollbar.scrollWrapper.scrollHeight - questScrollbar.scrollWrapper.clientHeight,
+                    isDragging: vrControllerState.isDragging
+                });
+            }
+        }, 5000);
     </script>
 </body>
 </html>
