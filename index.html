@@ -63,7 +63,7 @@
             position: absolute;
             right: 10px;
             top: 0;
-            width: 40px;
+            width: 25px;
             height: 100%;
             z-index: 1000;
         }
@@ -71,20 +71,20 @@
         .scroll-track {
             position: absolute;
             top: 0;
-            width: 40px;
+            width: 25px;
             height: 100%;
             background:
                 url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
                 url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
                 url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
-            background-size: 100% 40px, 100% 40px, 100% auto;
+            background-size: 100% 25px, 100% 25px, 100% auto;
         }
 
         .scroll-up-area,
         .scroll-down-area {
             position: absolute;
-            width: 40px;
-            height: 40px;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
             z-index: 1002;
         }
@@ -99,8 +99,8 @@
 
         .scroll-handle {
             position: absolute;
-            width: 40px;
-            height: 120px;
+            width: 25px;
+            height: 40px;
             background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
             background-size: 80% 100%;
             cursor: grab;
@@ -114,35 +114,6 @@
             border-color: #007bff;
             background-color: rgba(0, 123, 255, 0.2);
             box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
-        }
-
-        .vr-status {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 9999;
-        }
-
-        /* VR 模式下的特殊樣式 */
-        .vr-mode .scroll-handle {
-            border-width: 4px;
-            height: 150px;
-        }
-
-        .vr-mode .scroll-up-area,
-        .vr-mode .scroll-down-area {
-            border: 2px solid transparent;
-        }
-
-        .vr-mode .scroll-up-area:hover,
-        .vr-mode .scroll-down-area:hover {
-            border-color: #007bff;
-            background-color: rgba(0, 123, 255, 0.1);
         }
     </style>
 	
