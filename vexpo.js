@@ -40,279 +40,387 @@ startButton.onclick = event => {
     linkOnclicked();
 };
 
-//修正はここから
-// 檢測 Meta Quest 瀏覽器並初始化特殊的滾動控制
-if (/OculusBrowser|Quest|MetaQuest/i.test(navigator.userAgent)) {
-    console.log("檢測到 Meta Quest Browser");
-    
-    // 等待 DOM 完全載入
-    document.addEventListener('DOMContentLoaded', function() {
-        initQuestScrolling();
-    });
-    
-    // 如果 DOM 已經載入完成，直接初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initQuestScrolling);
-    } else {
-        initQuestScrolling();
-    }
-    
-    function initQuestScrolling() {
-        const contentElement = document.querySelector('#content-wrapper');
-        if (!contentElement) {
-            console.error("未找到 #content-wrapper");
-            return;
-        }
-        
-        // 初始化 SimpleBar
-        const simpleBar = new SimpleBar(contentElement, {
-            autoHide: false,
-            forceEnabled: true,
-            scrollbarMinSize: 80,
-            scrollbarMaxSize: 80
-        });
-        
-        console.log("SimpleBar 初始化完成");
-        
-        // 等待 SimpleBar 完全初始化
-        setTimeout(() => {
-            setupQuestControls(contentElement);
-        }, 500);
-    }
-    
-    function setupQuestControls(contentElement) {
-        const scrollWrapper = contentElement.querySelector('.simplebar-content-wrapper');
-        const track = contentElement.querySelector('.simplebar-track.simplebar-vertical');
-        
-        if (!track || !scrollWrapper) {
-            console.error("未找到必要的滾動元素");
-            return;
-        }
-        
-        console.log("開始設置 Quest 控制");
-        
-        // 移除原有的 SimpleBar 滑塊，創建自定義的 VR 友好控制元件
-        const originalScrollbar = track.querySelector('.simplebar-scrollbar');
-        if (originalScrollbar) {
-            originalScrollbar.style.display = 'none';
-        }
-        
-        // 創建自定義的可點擊區域
-        createScrollControls(track, scrollWrapper);
-    }
-    
-    function createScrollControls(track, scrollWrapper) {
-        // 清空軌道內容
-        track.innerHTML = '';
-        
-        // 設置軌道為相對定位
-        track.style.position = 'relative';
-        track.style.width = '80px';
-        track.style.height = '100%';
-        
-        // 創建三個區域：上箭頭、中間拖曳區、下箭頭
-        const upButton = document.createElement('div');
-        const middleArea = document.createElement('div');
-        const downButton = document.createElement('div');
-        const dragHandle = document.createElement('div');
-        
-        // 上箭頭按鈕樣式
-        upButton.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat center;
-            background-size: 100% 100%;
-            cursor: pointer;
-            z-index: 1001;
-            border: 2px solid transparent;
-        `;
-        
-        // 下箭頭按鈕樣式
-        downButton.style.cssText = `
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat center;
-            background-size: 100% 100%;
-            cursor: pointer;
-            z-index: 1001;
-            border: 2px solid transparent;
-        `;
-        
-        // 中間區域樣式
-        middleArea.style.cssText = `
-            position: absolute;
-            top: 80px;
-            left: 0;
-            width: 100%;
-            height: calc(100% - 160px);
-            background: url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
-            background-size: 100% auto;
-            cursor: pointer;
-            z-index: 1000;
-        `;
-        
-        // 拖曳控制柄樣式
-        dragHandle.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
-            background-size: 80% 50%;
-            cursor: grab;
-            z-index: 1002;
-            border: 2px solid transparent;
-            transition: border-color 0.2s;
-        `;
-        
-        // 將元素添加到軌道
-        track.appendChild(upButton);
-        track.appendChild(middleArea);
-        track.appendChild(downButton);
-        middleArea.appendChild(dragHandle);
-        
-        // 添加 VR 控制器事件監聽
-        addVREventListeners(upButton, downButton, dragHandle, middleArea, scrollWrapper);
-        
-        // 初始化拖曳柄位置
-        updateHandlePosition(scrollWrapper, dragHandle, middleArea);
-        
-        // 監聽滾動事件以更新拖曳柄位置
-        scrollWrapper.addEventListener('scroll', () => {
-            updateHandlePosition(scrollWrapper, dragHandle, middleArea);
-        });
-        
-        console.log("VR 滾動控制設置完成");
-    }
-    
-    function addVREventListeners(upButton, downButton, dragHandle, middleArea, scrollWrapper) {
-        const scrollStep = 50;
-        
-        // VR 控制器事件列表
-        const vrEvents = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'pointerdown', 'pointerup'];
-        
-        // 上箭頭事件
-        vrEvents.forEach(eventType => {
-            upButton.addEventListener(eventType, function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (eventType === 'click' || eventType === 'mousedown' || eventType === 'touchstart' || eventType === 'pointerdown') {
-                    scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
-                    console.log("上箭頭點擊 - 當前滾動位置:", scrollWrapper.scrollTop);
-                    
-                    // 視覺反饋
-                    upButton.style.borderColor = '#007bff';
-                    setTimeout(() => {
-                        upButton.style.borderColor = 'transparent';
-                    }, 200);
-                }
-            }, { passive: false });
-        });
-        
-        // 下箭頭事件
-        vrEvents.forEach(eventType => {
-            downButton.addEventListener(eventType, function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (eventType === 'click' || eventType === 'mousedown' || eventType === 'touchstart' || eventType === 'pointerdown') {
-                    const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-                    scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
-                    console.log("下箭頭點擊 - 當前滾動位置:", scrollWrapper.scrollTop);
-                    
-                    // 視覺反饋
-                    downButton.style.borderColor = '#007bff';
-                    setTimeout(() => {
-                        downButton.style.borderColor = 'transparent';
-                    }, 200);
-                }
-            }, { passive: false });
-        });
-        
-        // 拖曳控制
+let isVRMode = false;
+        let xrSession = null;
+        let customScrollbar = null;
+        let scrollWrapper = null;
         let isDragging = false;
-        let startY = 0;
-        let startScrollTop = 0;
+        let dragStartY = 0;
+        let scrollStartTop = 0;
+
+        // 初始化
+        window.addEventListener('load', function() {
+            console.log("Page loaded");
+            
+            // 檢測是否為 Meta Quest Browser
+            if (isMetaQuestBrowser()) {
+                console.log("Meta Quest Browser detected!");
+                document.body.classList.add('meta-quest');
+                setupScrollbar();
+                document.getElementById('vr-status').textContent = '狀態: Meta Quest Browser - VR 滾動條已啟用';
+                document.getElementById('vr-status').style.background = 'rgba(0, 128, 0, 0.7)';
+            } else {
+                console.log("Not Meta Quest Browser - using default scrolling");
+                document.getElementById('vr-status').textContent = '狀態: 一般瀏覽器 - 使用預設滾動';
+                document.getElementById('vr-status').style.background = 'rgba(128, 128, 128, 0.7)';
+            }
+            
+            // 隱藏 VR 按鈕，因為不需要手動進入 VR 模式
+            document.getElementById('vr-enter-button').style.display = 'none';
+        });
         
-        // 拖曳開始
-        dragHandle.addEventListener('mousedown', startDrag, { passive: false });
-        dragHandle.addEventListener('touchstart', startDrag, { passive: false });
-        dragHandle.addEventListener('pointerdown', startDrag, { passive: false });
-        
-        function startDrag(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            isDragging = true;
-            startY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY;
-            startScrollTop = scrollWrapper.scrollTop;
-            
-            dragHandle.style.cursor = 'grabbing';
-            dragHandle.style.borderColor = '#007bff';
-            
-            console.log("開始拖曳:", startY, startScrollTop);
+        // 檢測是否為 Meta Quest Browser
+        function isMetaQuestBrowser() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return userAgent.includes('quest') || 
+                   userAgent.includes('oculusbrowser') || 
+                   userAgent.includes('meta');
         }
-        
-        // 拖曳過程
-        document.addEventListener('mousemove', handleDrag, { passive: false });
-        document.addEventListener('touchmove', handleDrag, { passive: false });
-        document.addEventListener('pointermove', handleDrag, { passive: false });
-        
-        function handleDrag(e) {
-            if (!isDragging) return;
-            
-            e.preventDefault();
-            const currentY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY;
-            const deltaY = currentY - startY;
-            
-            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-            const middleHeight = middleArea.clientHeight;
-            const scrollRatio = maxScroll / middleHeight;
-            
-            const newScrollTop = Math.max(0, Math.min(maxScroll, startScrollTop + deltaY * scrollRatio));
-            scrollWrapper.scrollTop = newScrollTop;
-            
-            console.log("拖曳中:", newScrollTop);
-        }
-        
-        // 拖曳結束
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
-        document.addEventListener('pointerup', endDrag);
-        
-        function endDrag(e) {
-            if (isDragging) {
-                isDragging = false;
-                dragHandle.style.cursor = 'grab';
-                dragHandle.style.borderColor = 'transparent';
-                console.log("結束拖曳");
+
+        // 檢查 WebXR 支持
+        async function checkVRSupport() {
+            if ('xr' in navigator) {
+                try {
+                    const supported = await navigator.xr.isSessionSupported('immersive-vr');
+                    const statusEl = document.getElementById('vr-status');
+                    if (supported) {
+                        statusEl.textContent = '狀態: WebXR 支持，可使用 VR 控制器';
+                        statusEl.style.background = 'rgba(0, 128, 0, 0.7)';
+                    } else {
+                        statusEl.textContent = '狀態: WebXR 不支持，使用滑鼠/觸控操作';
+                        statusEl.style.background = 'rgba(255, 140, 0, 0.7)';
+                    }
+                } catch (error) {
+                    console.log('WebXR check failed:', error);
+                    document.getElementById('vr-status').textContent = '狀態: 正常瀏覽模式';
+                }
+            } else {
+                document.getElementById('vr-status').textContent = '狀態: WebXR 不可用';
             }
         }
-    }
-    
-    function updateHandlePosition(scrollWrapper, dragHandle, middleArea) {
-        const scrollTop = scrollWrapper.scrollTop;
-        const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-        const middleHeight = middleArea.clientHeight;
-        const handleHeight = dragHandle.clientHeight;
-        
-        if (maxScroll > 0) {
-            const scrollRatio = scrollTop / maxScroll;
-            const maxHandleTop = middleHeight - handleHeight;
-            const handleTop = scrollRatio * maxHandleTop;
-            
-            dragHandle.style.top = Math.max(0, Math.min(maxHandleTop, handleTop)) + 'px';
+
+        // 設置 VR 按鈕
+        function setupVRButton() {
+            const vrButton = document.getElementById('vr-enter-button');
+            vrButton.addEventListener('click', async () => {
+                if (!isVRMode) {
+                    await enterVR();
+                } else {
+                    exitVR();
+                }
+            });
         }
-    }
-}
-//修正はここまで
+
+        // 進入 VR 模式
+        async function enterVR() {
+            if (!('xr' in navigator)) {
+                alert('此瀏覽器不支持 WebXR');
+                return;
+            }
+
+            try {
+                xrSession = await navigator.xr.requestSession('immersive-vr', {
+                    optionalFeatures: ['local-floor', 'bounded-floor']
+                });
+                
+                isVRMode = true;
+                document.body.classList.add('vr-mode');
+                document.getElementById('vr-enter-button').textContent = '退出 VR 模式';
+                document.getElementById('vr-status').textContent = '狀態: VR 模式啟用，控制器可用';
+                
+                console.log('VR session started');
+                
+                // 設置 VR 控制器事件
+                setupVRControllers();
+                
+                xrSession.addEventListener('end', () => {
+                    exitVR();
+                });
+                
+            } catch (error) {
+                console.error('Failed to start VR session:', error);
+                alert('無法啟動 VR 模式: ' + error.message);
+            }
+        }
+
+        // 退出 VR 模式
+        function exitVR() {
+            if (xrSession) {
+                xrSession.end();
+                xrSession = null;
+            }
+            
+            isVRMode = false;
+            document.body.classList.remove('vr-mode');
+            document.getElementById('vr-enter-button').textContent = '進入 VR 模式';
+            document.getElementById('vr-status').textContent = '狀態: 正常瀏覽模式';
+            
+            console.log('VR session ended');
+        }
+
+        // 設置 VR 控制器
+        function setupVRControllers() {
+            if (!xrSession) return;
+            
+            console.log('Setting up VR controllers');
+            
+            // 監聽控制器輸入
+            xrSession.addEventListener('inputsourceschange', (event) => {
+                console.log('Input sources changed');
+            });
+            
+            // 設置渲染循環來處理控制器輸入
+            function onXRFrame(time, frame) {
+                if (!xrSession) return;
+                
+                // 獲取輸入源（控制器）
+                const inputSources = xrSession.inputSources;
+                
+                for (let inputSource of inputSources) {
+                    if (inputSource.gamepad) {
+                        handleControllerInput(inputSource.gamepad);
+                    }
+                }
+                
+                xrSession.requestAnimationFrame(onXRFrame);
+            }
+            
+            xrSession.requestAnimationFrame(onXRFrame);
+        }
+
+        // 處理控制器輸入
+        function handleControllerInput(gamepad) {
+            // A 按鈕 (通常是 buttons[0]) - 向上滾動
+            if (gamepad.buttons[0] && gamepad.buttons[0].pressed) {
+                scrollUp();
+            }
+            
+            // B 按鈕 (通常是 buttons[1]) - 向下滾動
+            if (gamepad.buttons[1] && gamepad.buttons[1].pressed) {
+                scrollDown();
+            }
+            
+            // 扳機鍵 (通常是 buttons[2]) - 拖拽模式
+            if (gamepad.buttons[2] && gamepad.buttons[2].pressed) {
+                if (!isDragging) {
+                    startVRDrag();
+                }
+                handleVRDrag(gamepad.axes[1]); // Y 軸搖桿
+            } else if (isDragging) {
+                endVRDrag();
+            }
+        }
+
+        // VR 拖拽開始
+        function startVRDrag() {
+            if (!scrollWrapper) return;
+            
+            isDragging = true;
+            scrollStartTop = scrollWrapper.scrollTop;
+            
+            if (customScrollbar && customScrollbar.handle) {
+                customScrollbar.handle.classList.add('active');
+            }
+            
+            console.log('VR drag started');
+        }
+
+        // VR 拖拽處理
+        function handleVRDrag(axisValue) {
+            if (!isDragging || !scrollWrapper) return;
+            
+            // 將搖桿軸值轉換為滾動位置
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            const scrollSensitivity = 5; // 調整靈敏度
+            
+            const scrollDelta = axisValue * scrollSensitivity;
+            const newScrollTop = Math.max(0, Math.min(maxScroll, scrollWrapper.scrollTop + scrollDelta));
+            
+            scrollWrapper.scrollTop = newScrollTop;
+            
+            console.log(`VR drag: axis=${axisValue}, scroll=${newScrollTop}`);
+        }
+
+        // VR 拖拽結束
+        function endVRDrag() {
+            isDragging = false;
+            
+            if (customScrollbar && customScrollbar.handle) {
+                customScrollbar.handle.classList.remove('active');
+            }
+            
+            console.log('VR drag ended');
+        }
+
+        // 設置自定義滾動條 - 只在 Meta Quest 上執行
+        function setupScrollbar() {
+            if (!isMetaQuestBrowser()) {
+                console.log("Not Meta Quest - skipping custom scrollbar");
+                return;
+            }
+            
+            const contentWrapper = document.querySelector('#content-wrapper');
+            scrollWrapper = document.querySelector('.simplebar-content-wrapper');
+            
+            if (!contentWrapper || !scrollWrapper) {
+                console.error('Required elements not found');
+                return;
+            }
+            
+            // 創建自定義滾動條
+            const scrollbarContainer = document.createElement('div');
+            scrollbarContainer.className = 'custom-scrollbar';
+            
+            const track = document.createElement('div');
+            track.className = 'scroll-track';
+            
+            const upArea = document.createElement('div');
+            upArea.className = 'scroll-up-area';
+            
+            const downArea = document.createElement('div');
+            downArea.className = 'scroll-down-area';
+            
+            const handle = document.createElement('div');
+            handle.className = 'scroll-handle';
+            
+            scrollbarContainer.appendChild(track);
+            scrollbarContainer.appendChild(upArea);
+            scrollbarContainer.appendChild(downArea);
+            scrollbarContainer.appendChild(handle);
+            
+            // 添加到 body 而不是 contentWrapper，確保在畫面最右邊
+            document.body.appendChild(scrollbarContainer);
+            
+            customScrollbar = {
+                container: scrollbarContainer,
+                track: track,
+                upArea: upArea,
+                downArea: downArea,
+                handle: handle
+            };
+            
+            // 添加 Meta Quest 控制器事件
+            upArea.addEventListener('click', scrollUp);
+            downArea.addEventListener('click', scrollDown);
+            
+            // Quest 控制器拖拽
+            handle.addEventListener('mousedown', startDrag);
+            handle.addEventListener('touchstart', startDrag);
+            handle.addEventListener('pointerdown', startDrag);
+            
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('touchmove', handleDrag);
+            document.addEventListener('pointermove', handleDrag);
+            
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+            document.addEventListener('pointerup', endDrag);
+            
+            // 更新手柄位置
+            scrollWrapper.addEventListener('scroll', updateHandlePosition);
+            updateHandlePosition();
+            
+            // 更新滾動進度
+            scrollWrapper.addEventListener('scroll', updateScrollProgress);
+            
+            console.log('Meta Quest custom scrollbar created');
+        }
+
+        // 滾動控制函數
+        function scrollUp() {
+            if (!scrollWrapper || !isMetaQuestBrowser()) return;
+            const scrollStep = 200;
+            scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
+            console.log('Scroll up to:', scrollWrapper.scrollTop);
+        }
+
+        function scrollDown() {
+            if (!scrollWrapper || !isMetaQuestBrowser()) return;
+            const scrollStep = 200;
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
+            console.log('Scroll down to:', scrollWrapper.scrollTop);
+        }
+
+        // 滑鼠/控制器拖拽
+        function startDrag(e) {
+            if (!isMetaQuestBrowser()) return;
+            
+            isDragging = true;
+            dragStartY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY || 0;
+            scrollStartTop = scrollWrapper.scrollTop;
+            customScrollbar.handle.classList.add('active');
+            e.preventDefault();
+            console.log('Drag started at Y:', dragStartY);
+        }
+
+        function handleDrag(e) {
+            if (!isDragging || !scrollWrapper) return;
+            
+            const currentY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY || 0;
+            const deltaY = currentY - dragStartY;
+            
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            // 可拖拽區域高度：總高度 - 上箭頭(27px) - 下箭頭(27px) - 手柄高度(40px)
+            const trackHeight = window.innerHeight - 27 - 27 - 40;
+            const scrollRatio = maxScroll / trackHeight;
+            
+            const newScrollTop = Math.max(0, Math.min(maxScroll, scrollStartTop + deltaY * scrollRatio));
+            scrollWrapper.scrollTop = newScrollTop;
+            
+            console.log(`Dragging: deltaY=${deltaY}, newScrollTop=${newScrollTop}`);
+            e.preventDefault();
+        }
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            if (customScrollbar) {
+                customScrollbar.handle.classList.remove('active');
+            }
+            console.log('Drag ended');
+        }
+
+        // 更新手柄位置 - 修正邊界問題
+        function updateHandlePosition() {
+            if (!customScrollbar || !scrollWrapper) return;
+            
+            const scrollTop = scrollWrapper.scrollTop;
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            
+            // 可移動區域：從上箭頭下方到下箭頭上方，減去手柄本身高度
+            const topBoundary = 27; // 上箭頭高度
+            const bottomBoundary = window.innerHeight - 27; // 下箭頭位置
+            const handleHeight = 40; // 手柄高度
+            const availableHeight = bottomBoundary - topBoundary - handleHeight;
+            
+            if (maxScroll > 0) {
+                const scrollRatio = scrollTop / maxScroll;
+                const handleTop = topBoundary + scrollRatio * availableHeight;
+                
+                // 確保手柄不會超出邊界
+                const finalTop = Math.max(topBoundary, Math.min(bottomBoundary - handleHeight, handleTop));
+                customScrollbar.handle.style.top = finalTop + 'px';
+                
+                console.log(`Handle position: ${finalTop}px (scroll: ${scrollRatio * 100}%)`);
+            } else {
+                customScrollbar.handle.style.top = topBoundary + 'px';
+            }
+        }
+
+        // 更新滾動進度
+        function updateScrollProgress() {
+            if (!scrollWrapper) return;
+            
+            const documentHeight = scrollWrapper.scrollHeight;
+            const scrollPosition = scrollWrapper.scrollTop + scrollWrapper.clientHeight;
+            const scrollPercentage = (scrollPosition / documentHeight) * 100;
+            
+            const progressElement = document.getElementById('scroll-progress');
+            if (progressElement) {
+                progressElement.textContent = Math.round(scrollPercentage) + '%';
+            }
+        }
+
 
 
