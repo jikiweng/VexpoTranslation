@@ -7,7 +7,7 @@ body {
 }
 
 .content {
-    height: 60vh;
+    height: 100vh;
     max-height: 50%;
     margin: 0 auto;
     position: sticky;
@@ -300,6 +300,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; 
 }
+
 
 
 
