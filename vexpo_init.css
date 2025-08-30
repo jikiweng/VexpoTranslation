@@ -21,7 +21,9 @@ body {
     font-style: normal;
     line-height: 16px;
     font-weight: 400;
-    overflow: hidden;
+    
+    /* スクロールあり */
+    overflow-y: scroll;
 }
 
 p {
@@ -281,6 +283,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; 
 }
+
 
 
 
