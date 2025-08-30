@@ -1,6 +1,3 @@
-// === WebXR Scrollbar 功能 ===
-console.log("=== WebXR Scrollbar Initialize ===");
-
 let isVRMode = false;
 let xrSession = null;
 let customScrollbar = null;
@@ -9,48 +6,27 @@ let isDragging = false;
 let dragStartY = 0;
 let scrollStartTop = 0;
 
-// WebXR 初始化 - 在原本的 DOMContentLoaded 之後執行
-window.addEventListener('load', function() {
-    console.log("WebXR Page loaded");
-    
-    // 強制檢測並設置 Meta Quest 支持
-    console.log("User Agent:", navigator.userAgent);
-    
-    // 更寬鬆的檢測條件
+window.addEventListener('load', function() {    
     if (isMetaQuestBrowser()) {
-        console.log("Meta Quest Browser detected!");
         document.body.classList.add('meta-quest');
         setupScrollbar();
-    } else {
-        console.log("Not Meta Quest Browser - using default scrolling");
-    }
+    } 
 });
 
-// 檢測是否為 Meta Quest Browser - 更寬鬆的檢測
 function isMetaQuestBrowser() {
     const userAgent = navigator.userAgent.toLowerCase();
-    console.log("檢測 User Agent:", userAgent);
-    
-    // 更多的檢測條件
     const conditions = [
         userAgent.includes('quest'),
         userAgent.includes('oculusbrowser'),
         userAgent.includes('meta'),
     ];
     
-    const isQuest = conditions.some(condition => condition);
-    console.log("檢測條件結果:", conditions);
-    console.log("最終判定為 Meta Quest:", isQuest);
-    
+    const isQuest = conditions.some(condition => condition);    
     return isQuest;
 }
 
-// 設置自定義滾動條 - 只在 Meta Quest 上執行
 function setupScrollbar() {
-    if (!isMetaQuestBrowser()) {
-        console.log("Not Meta Quest - skipping custom scrollbar");
-        return;
-    }
+    if (!isMetaQuestBrowser()) return;
     
     const contentWrapper = document.querySelector('#content-wrapper');
     scrollWrapper = document.querySelector('.simplebar-content-wrapper');
@@ -60,7 +36,6 @@ function setupScrollbar() {
         return;
     }
     
-    // 創建自定義滾動條
     const scrollbarContainer = document.createElement('div');
     scrollbarContainer.className = 'custom-scrollbar';
     
@@ -81,7 +56,6 @@ function setupScrollbar() {
     scrollbarContainer.appendChild(downArea);
     scrollbarContainer.appendChild(handle);
     
-    // 添加到 body 而不是 contentWrapper，確保在畫面最右邊
     document.body.appendChild(scrollbarContainer);
     
     customScrollbar = {
@@ -92,11 +66,9 @@ function setupScrollbar() {
         handle: handle
     };
     
-    // 添加 Meta Quest 控制器事件
     upArea.addEventListener('click', scrollUp);
     downArea.addEventListener('click', scrollDown);
     
-    // Quest 控制器拖拽
     handle.addEventListener('mousedown', startDrag);
     handle.addEventListener('touchstart', startDrag);
     handle.addEventListener('pointerdown', startDrag);
@@ -109,22 +81,16 @@ function setupScrollbar() {
     document.addEventListener('touchend', endDrag);
     document.addEventListener('pointerup', endDrag);
     
-    // 更新手柄位置
     scrollWrapper.addEventListener('scroll', updateHandlePosition);
     updateHandlePosition();
     
-    // 更新滾動進度
     scrollWrapper.addEventListener('scroll', updateScrollProgress);
-    
-    console.log('Meta Quest custom scrollbar created');
 }
 
-// 滾動控制函數
 function scrollUp() {
     if (!scrollWrapper || !isMetaQuestBrowser()) return;
     const scrollStep = 200;
     scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
-    console.log('Scroll up to:', scrollWrapper.scrollTop);
 }
 
 function scrollDown() {
@@ -132,10 +98,8 @@ function scrollDown() {
     const scrollStep = 200;
     const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
     scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
-    console.log('Scroll down to:', scrollWrapper.scrollTop);
 }
 
-// 滑鼠/控制器拖拽
 function startDrag(e) {
     if (!isMetaQuestBrowser()) return;
     
@@ -144,7 +108,6 @@ function startDrag(e) {
     scrollStartTop = scrollWrapper.scrollTop;
     customScrollbar.handle.classList.add('active');
     e.preventDefault();
-    console.log('Drag started at Y:', dragStartY);
 }
 
 function handleDrag(e) {
@@ -154,14 +117,12 @@ function handleDrag(e) {
     const deltaY = currentY - dragStartY;
     
     const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-    // 可拖拽區域高度：總高度 - 上箭頭(27px) - 下箭頭(27px) - 手柄高度(40px)
     const trackHeight = window.innerHeight - 27 - 27 - 40;
     const scrollRatio = maxScroll / trackHeight;
     
     const newScrollTop = Math.max(0, Math.min(maxScroll, scrollStartTop + deltaY * scrollRatio));
     scrollWrapper.scrollTop = newScrollTop;
     
-    console.log(`Dragging: deltaY=${deltaY}, newScrollTop=${newScrollTop}`);
     e.preventDefault();
 }
 
@@ -171,37 +132,30 @@ function endDrag() {
     if (customScrollbar) {
         customScrollbar.handle.classList.remove('active');
     }
-    console.log('Drag ended');
 }
 
-// 更新手柄位置 - 修正邊界問題
 function updateHandlePosition() {
     if (!customScrollbar || !scrollWrapper) return;
     
     const scrollTop = scrollWrapper.scrollTop;
     const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
     
-    // 可移動區域：從上箭頭下方到下箭頭上方，減去手柄本身高度
-    const topBoundary = 27; // 上箭頭高度
-    const bottomBoundary = window.innerHeight - 27; // 下箭頭位置
-    const handleHeight = 40; // 手柄高度
+    const topBoundary = 27; 
+    const bottomBoundary = window.innerHeight - 27; 
+    const handleHeight = 40;
     const availableHeight = bottomBoundary - topBoundary - handleHeight;
     
     if (maxScroll > 0) {
         const scrollRatio = scrollTop / maxScroll;
         const handleTop = topBoundary + scrollRatio * availableHeight;
         
-        // 確保手柄不會超出邊界
         const finalTop = Math.max(topBoundary, Math.min(bottomBoundary - handleHeight, handleTop));
         customScrollbar.handle.style.top = finalTop + 'px';
-        
-        console.log(`Handle position: ${finalTop}px (scroll: ${scrollRatio * 100}%)`);
     } else {
         customScrollbar.handle.style.top = topBoundary + 'px';
     }
 }
 
-// 更新滾動進度
 function updateScrollProgress() {
     if (!scrollWrapper) return;
     
@@ -216,13 +170,11 @@ function updateScrollProgress() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 初始化 checkbox 樣式
     const agreeCheckbox = document.querySelector('.agree_checkbox');
     if (agreeCheckbox) {
         agreeCheckbox.style.setProperty("--custom-before-border", "solid 1px #ccc");
     }
 
-    // 滾動檢測 - 啟用同意按鈕
     const contentElement = document.getElementById('content');
     if (contentElement) {
         contentElement.onscroll = (event) => {
@@ -242,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // checkbox 變更處理
     const agreeCheckBox = document.querySelector("#agree");
     if (agreeCheckBox) {
         agreeCheckBox.onchange = event => {
@@ -250,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // 開始按鈕點擊處理
     const startButton = document.querySelector("#start");
     if (startButton) {
         startButton.onclick = event => {
@@ -279,4 +229,3 @@ function linkOnclicked() {
     var ppVer = document.head.querySelector('[name=pp-ver][content]').content;
     location.href = "?lang=" + lang + "&ts-ver=" + tsVer + "&pp-ver=" + ppVer;
 }
-
