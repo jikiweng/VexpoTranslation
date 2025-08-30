@@ -9,7 +9,130 @@
     <meta name="cp-ver" content="5.0.0">
 
     <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.min.css">
-    <link rel="stylesheet" href="vexpo_init.css">
+    
+    <style>
+        body {
+            background-color: #fff;
+            font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
+            font-style: normal;
+            line-height: normal;
+            overflow-x: hidden;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            max-width: 100%;
+            max-height: 100%;
+            height: 90vh;
+            margin: 0 auto;
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 400;
+        }
+
+        .term {
+            padding: 0px 25px 20px 20px;
+        }
+
+        #scroll-progress {
+            visibility: visible;
+            position: fixed;
+            top: 10px;
+            right: 50%;
+            transform: translateX(50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 9999;
+        }
+
+        .simplebar-track.simplebar-vertical {
+            display: block !important;
+        }
+
+		.meta-quest .simplebar-track.simplebar-vertical {
+            display: none !important;
+        }
+
+        .custom-scrollbar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 27px; 
+            height: 100vh;
+            z-index: 1000;
+            display: none; 
+        }
+
+        .meta-quest .custom-scrollbar {
+            display: block;
+        }
+
+        .scroll-track {
+            position: absolute;
+            top: 0;
+            width: 27px;
+            height: 100%;
+            background:
+                url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
+                url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
+                url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
+            background-size: 100% 27px, 100% 27px, 100% auto;
+        }
+
+        .scroll-up-area,
+        .scroll-down-area {
+            position: absolute;
+            width: 27px;
+            height: 27px;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        .scroll-up-area {
+            top: 0;
+        }
+
+        .scroll-down-area {
+            bottom: 0;
+        }
+
+        .scroll-handle {
+            position: absolute;
+            width: 27px;
+            height: 40px;
+            background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
+            background-size: 80% 50%;
+            cursor: grab;
+            z-index: 1003;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            border-radius: 3px;
+            transition: all 0.2s;
+            top: 27px; 
+        }
+
+        .scroll-handle.active {
+            border-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.2);
+            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
+        }
+
+        .meta-quest .content {
+            margin-right: 30px;
+        }
+
+        .meta-quest .scroll-up-area:hover,
+        .meta-quest .scroll-down-area:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+    </style>
 	
     <title>利用規約・プライバシーポリシー・Cookieポリシー</title>
 </head>
@@ -872,6 +995,195 @@ V万博アプリで使用されるクッキー<br/>
     </div>
 	
     <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
-    <script src="vexpo.js"></script>
+    
+    <script>
+        console.log("=== WebXR Scrollbar Initialize ===");
+        
+        let isVRMode = false;
+        let xrSession = null;
+        let customScrollbar = null;
+        let scrollWrapper = null;
+        let isDragging = false;
+        let dragStartY = 0;
+        let scrollStartTop = 0;
+
+        window.addEventListener('load', function() {
+            console.log("Page loaded");
+            
+            if (isMetaQuestBrowser()) {
+                console.log("Meta Quest Browser detected!");
+                document.body.classList.add('meta-quest');
+                setupScrollbar();
+            } else {
+                console.log("Not Meta Quest Browser - using default scrolling");
+            }
+            
+            document.getElementById('vr-enter-button').style.display = 'none';
+        });
+        
+        function isMetaQuestBrowser() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return userAgent.includes('quest') || 
+                   userAgent.includes('oculusbrowser') || 
+                   userAgent.includes('meta');
+        }
+		
+        function setupScrollbar() {
+            if (!isMetaQuestBrowser()) {
+                console.log("Not Meta Quest - skipping custom scrollbar");
+                return;
+            }
+            
+            const contentWrapper = document.querySelector('#content-wrapper');
+            scrollWrapper = document.querySelector('.simplebar-content-wrapper');
+            
+            if (!contentWrapper || !scrollWrapper) {
+                console.error('Required elements not found');
+                return;
+            }
+            
+            const scrollbarContainer = document.createElement('div');
+            scrollbarContainer.className = 'custom-scrollbar';
+            
+            const track = document.createElement('div');
+            track.className = 'scroll-track';
+            
+            const upArea = document.createElement('div');
+            upArea.className = 'scroll-up-area';
+            
+            const downArea = document.createElement('div');
+            downArea.className = 'scroll-down-area';
+            
+            const handle = document.createElement('div');
+            handle.className = 'scroll-handle';
+            
+            scrollbarContainer.appendChild(track);
+            scrollbarContainer.appendChild(upArea);
+            scrollbarContainer.appendChild(downArea);
+            scrollbarContainer.appendChild(handle);
+            
+            // 添加到 body 而不是 contentWrapper，確保在畫面最右邊
+            document.body.appendChild(scrollbarContainer);
+            
+            customScrollbar = {
+                container: scrollbarContainer,
+                track: track,
+                upArea: upArea,
+                downArea: downArea,
+                handle: handle
+            };
+            
+            upArea.addEventListener('click', scrollUp);
+            downArea.addEventListener('click', scrollDown);
+            
+            handle.addEventListener('mousedown', startDrag);
+            handle.addEventListener('touchstart', startDrag);
+            handle.addEventListener('pointerdown', startDrag);
+            
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('touchmove', handleDrag);
+            document.addEventListener('pointermove', handleDrag);
+            
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+            document.addEventListener('pointerup', endDrag);
+            
+            scrollWrapper.addEventListener('scroll', updateHandlePosition);
+            updateHandlePosition();
+            
+            scrollWrapper.addEventListener('scroll', updateScrollProgress);
+            
+            console.log('Meta Quest custom scrollbar created');
+        }
+
+        function scrollUp() {
+            if (!scrollWrapper || !isMetaQuestBrowser()) return;
+            const scrollStep = 200;
+            scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
+            console.log('Scroll up to:', scrollWrapper.scrollTop);
+        }
+
+        function scrollDown() {
+            if (!scrollWrapper || !isMetaQuestBrowser()) return;
+            const scrollStep = 200;
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
+            console.log('Scroll down to:', scrollWrapper.scrollTop);
+        }
+
+        function startDrag(e) {
+            if (!isMetaQuestBrowser()) return;
+            
+            isDragging = true;
+            dragStartY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY || 0;
+            scrollStartTop = scrollWrapper.scrollTop;
+            customScrollbar.handle.classList.add('active');
+            e.preventDefault();
+            console.log('Drag started at Y:', dragStartY);
+        }
+
+        function handleDrag(e) {
+            if (!isDragging || !scrollWrapper) return;
+            
+            const currentY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY || 0;
+            const deltaY = currentY - dragStartY;
+            
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            const trackHeight = window.innerHeight - 27 - 27 - 40;
+            const scrollRatio = maxScroll / trackHeight;
+            
+            const newScrollTop = Math.max(0, Math.min(maxScroll, scrollStartTop + deltaY * scrollRatio));
+            scrollWrapper.scrollTop = newScrollTop;
+            
+            console.log(`Dragging: deltaY=${deltaY}, newScrollTop=${newScrollTop}`);
+            e.preventDefault();
+        }
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            if (customScrollbar) {
+                customScrollbar.handle.classList.remove('active');
+            }
+            console.log('Drag ended');
+        }
+
+        function updateHandlePosition() {
+            if (!customScrollbar || !scrollWrapper) return;
+            
+            const scrollTop = scrollWrapper.scrollTop;
+            const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+            
+            const topBoundary = 27; 
+            const bottomBoundary = window.innerHeight - 27; 
+            const handleHeight = 40; 
+            const availableHeight = bottomBoundary - topBoundary - handleHeight;
+            
+            if (maxScroll > 0) {
+                const scrollRatio = scrollTop / maxScroll;
+                const handleTop = topBoundary + scrollRatio * availableHeight;
+                
+                const finalTop = Math.max(topBoundary, Math.min(bottomBoundary - handleHeight, handleTop));
+                customScrollbar.handle.style.top = finalTop + 'px';
+                
+                console.log(`Handle position: ${finalTop}px (scroll: ${scrollRatio * 100}%)`);
+            } else {
+                customScrollbar.handle.style.top = topBoundary + 'px';
+            }
+        }
+
+        function updateScrollProgress() {
+            if (!scrollWrapper) return;
+            
+            const documentHeight = scrollWrapper.scrollHeight;
+            const scrollPosition = scrollWrapper.scrollTop + scrollWrapper.clientHeight;
+            const scrollPercentage = (scrollPosition / documentHeight) * 100;
+            
+            const progressElement = document.getElementById('scroll-progress');
+            if (progressElement) {
+                progressElement.textContent = Math.round(scrollPercentage) + '%';
+            }
+        }
+    </script>
 </body>
 </html>
