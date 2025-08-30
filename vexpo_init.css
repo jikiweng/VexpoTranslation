@@ -217,7 +217,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 }
 
 .simplebar-track.simplebar-vertical {
-    display: block !important;
+    display: none !important;
     right: 0;
 }
 
@@ -283,6 +283,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; 
 }
+
 
 
 
