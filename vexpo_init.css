@@ -261,26 +261,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     top: 27px; /* 從上箭頭邊界開始 */
 }
 
-.scroll-handle.active {
-    border-color: #007bff;
-    background-color: rgba(0, 123, 255, 0.2);
-    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
-}
-
 /* Meta Quest 檢測時調整內容區域 */
 .meta-quest .content {
     margin-right: 30px; /* 為滾動條留出空間 */
 }
-
-.meta-quest .scroll-up-area:hover,
-.meta-quest .scroll-down-area:hover {
-    background-color: rgba(0, 123, 255, 0.2);
-}
-
-
-
-
-
-
-
-
