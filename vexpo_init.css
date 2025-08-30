@@ -8,10 +8,10 @@ body {
 
 .content {
     height: 60vh;
-    max-height: 50%;
+    max-height: 100%;
     margin: 0 auto;
     position: sticky;
-    border-radius: 20px;
+    border-radius: 2px;
 
     /* figma 設定値 */
     color: #000;
@@ -247,8 +247,8 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     right: 0;
     top: 0;
     width: 27px; 
-    height: 60vh;
-    z-index: 600;
+    height: 100vh;
+    z-index: 1000;
     display: none; 
 }
 
@@ -274,7 +274,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     width: 27px;
     height: 27px;
     cursor: pointer;
-    z-index: 602;
+    z-index: 1002;
 }
 
 .scroll-up-area {
@@ -292,7 +292,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
     background-size: 80% 100%;
     cursor: grab;
-    z-index: 603;
+    z-index: 1003;
     transition: all 0.2s;
     top: 27px;
 }
@@ -300,6 +300,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; 
 }
+
 
 
 
