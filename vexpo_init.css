@@ -1,13 +1,16 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+}
+
 body {
     background-color: #fff;
     font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
     font-style: normal;
     line-height: normal;
     -webkit-tap-highlight-color:rgba(0,0,0,0);
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
 }
 
 .content {
@@ -283,4 +286,5 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     transition: all 0.2s;
     top: 27px;
 }
+
 
