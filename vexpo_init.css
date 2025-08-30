@@ -29,23 +29,6 @@ body {
     overflow-y: auto;
 }
 
-/* スクロールの幅の設定 */
-    .content::-webkit-scrollbar {
-        width: 16px;
-    }
-
-    .content::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.10);
-        border-radius: 10px;
-    }
-
-    /* ドラックできるスクロール部の設定 */
-    .content::-webkit-scrollbar-thumb {
-        border-radius: 200px;
-        background: #222;
-    }
-
-
 p {
     margin-top: 0rem;
     margin-bottom: 0rem;
@@ -236,6 +219,15 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     z-index: 9999;
 }
 
+.simplebar-track.simplebar-vertical {
+    display: block !important;
+    right: 0;
+}
+
+.meta-quest .simplebar-track.simplebar-vertical {
+    display: none !important;
+}
+
 .custom-scrollbar {
     position: fixed;
     right: 0;
@@ -290,6 +282,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     transition: all 0.2s;
     top: 27px;
 }
+
 
 
 
