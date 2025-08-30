@@ -208,8 +208,8 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     right: 0;
     top: 0;
     width: 27px; /* 原本 80px 的 1/3 */
-    height: 100vh;
-    z-index: 1000;
+    height: 60vh;
+    z-index: 600;
     display: none; /* 預設隱藏 */
 }
 
@@ -236,7 +236,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     width: 27px;
     height: 27px;
     cursor: pointer;
-    z-index: 1002;
+    z-index: 602;
 }
 
 .scroll-up-area {
@@ -263,5 +263,6 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; /* 為滾動條留出空間 */
 }
+
 
 
