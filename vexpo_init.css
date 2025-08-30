@@ -21,9 +21,6 @@ body {
     font-style: normal;
     line-height: 16px;
     font-weight: 400;
-    
-    /* スクロールあり */
-    overflow-y: scroll;
 }
 
 p {
@@ -279,6 +276,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     transition: all 0.2s;
     top: 27px;
 }
+
 
 
 
