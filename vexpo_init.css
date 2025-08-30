@@ -21,6 +21,7 @@ body {
     font-style: normal;
     line-height: 16px;
     font-weight: 400;
+    overflow: hidden;
 }
 
 p {
@@ -215,6 +216,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 
 .simplebar-track.simplebar-vertical {
     display: block !important;
+    right: 0;
 }
 
 .meta-quest .simplebar-track.simplebar-vertical {
@@ -279,6 +281,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; 
 }
+
 
 
 
