@@ -255,8 +255,6 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     background-size: 80% 100%;
     cursor: grab;
     z-index: 1003;
-    border: 1px solid rgba(0, 123, 255, 0.3);
-    border-radius: 3px;
     transition: all 0.2s;
     top: 27px; /* 從上箭頭邊界開始 */
 }
@@ -265,3 +263,4 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; /* 為滾動條留出空間 */
 }
+
