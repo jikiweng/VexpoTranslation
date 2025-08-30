@@ -36,11 +36,6 @@ function isMetaQuestBrowser() {
         userAgent.includes('quest'),
         userAgent.includes('oculusbrowser'),
         userAgent.includes('meta'),
-        userAgent.includes('oculus'),
-        userAgent.includes('vr'),
-        // 檢測是否在 VR 環境中
-        window.screen.width === window.screen.height, // VR 通常是正方形顯示
-        navigator.xr !== undefined // 支持 WebXR
     ];
     
     const isQuest = conditions.some(condition => condition);
@@ -284,3 +279,4 @@ function linkOnclicked() {
     var ppVer = document.head.querySelector('[name=pp-ver][content]').content;
     location.href = "?lang=" + lang + "&ts-ver=" + tsVer + "&pp-ver=" + ppVer;
 }
+
