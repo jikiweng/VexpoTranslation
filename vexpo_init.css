@@ -28,22 +28,6 @@ body {
     overflow-y: scroll;
 }
 
-/* スクロールの幅の設定 */
-.content::-webkit-scrollbar {
-    width: 16px;
-}
-
-.content::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.10);
-    border-radius: 10px;
-}
-
-/* ドラックできるスクロール部の設定 */
-.content::-webkit-scrollbar-thumb {
-    border-radius: 200px;
-    background: #222;
-}
-
 p {
     margin-top: 0rem;
     margin-bottom: 0rem;
@@ -238,7 +222,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
     position: absolute;
     top: 0;
     width: 27px;
-    height: 100%;
+    height: 50%;
     background:
         url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
         url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
@@ -292,6 +276,7 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .scroll-down-area:hover {
     background-color: rgba(0, 123, 255, 0.2);
 }
+
 
 
 
