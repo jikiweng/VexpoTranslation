@@ -3,11 +3,7 @@ body {
     font-family: "Role Sans Text Pro","A P-OTF A1Gothic StdN", sans-serif;
     font-style: normal;
     line-height: normal;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-    overflow-x: hidden;
-    overflow-y: auto;
-    margin: 0;
-    padding: 0;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
 }
 
 .content {
@@ -16,19 +12,19 @@ body {
     margin: 0 auto;
     position: sticky;
     border-radius: 20px;
-    
+
     /* figma 設定値 */
     color: #000;
     font-size: min(2.8vmin,16px);
     font-style: normal;
     line-height: 16px;
     font-weight: 400;
-    
+
     /* スクロールあり */
     overflow-y: scroll;
 }
 
-/* スクロールの幅の設定 */
+    /* スクロールの幅の設定 */
     .content::-webkit-scrollbar {
         width: 16px;
     }
@@ -265,4 +261,5 @@ input[type=checkbox]:checked + .agree_checkbox::after {
 .meta-quest .content {
     margin-right: 30px; 
 }
+
 
