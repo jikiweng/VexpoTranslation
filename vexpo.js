@@ -1,6 +1,7 @@
 let isVRMode = false;
 let xrSession = null;
 let customScrollbar = null;
+let contentWrapper = null;
 let isDragging = false;
 let dragStartY = 0;
 let scrollStartTop = 0;
@@ -27,7 +28,7 @@ function isMetaQuestBrowser() {
 function setupScrollbar() {
     if (!isMetaQuestBrowser()) return;
     
-    const contentWrapper = document.querySelector('#content-wrapper');
+    contentWrapper = document.querySelector('#content-wrapper');
     
     if (!contentWrapper) {
         console.error('Required elements not found');
@@ -195,3 +196,4 @@ window.addEventListener('load', function() {
             scrolledTermInfo = termInfo
         }
     })
+
