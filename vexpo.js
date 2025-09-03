@@ -34,6 +34,7 @@ function setupScrollbar() {
         console.error('Required elements not found');
         return;
     }
+    console.log('contentWrapper found:', contentWrapper);
     
     const scrollbarContainer = document.createElement('div');
     scrollbarContainer.className = 'custom-scrollbar';
@@ -84,6 +85,7 @@ function setupScrollbar() {
     updateHandlePosition();
     
     contentWrapper.addEventListener('scroll', updateScrollProgress);
+    updateScrollProgress();
 }
 
 function scrollUp() {
@@ -159,11 +161,23 @@ function updateHandlePosition() {
 }
 
 function updateScrollProgress() {
-    if (!contentWrapper) return;
+    console.log('updateScrollProgress called');
+    if (!contentWrapper) {
+        console.error('contentWrapper not found in updateScrollProgress');
+        return;
+    }
     
     const documentHeight = contentWrapper.scrollHeight;
     const scrollPosition = contentWrapper.scrollTop + contentWrapper.clientHeight;
     const scrollPercentage = (scrollPosition / documentHeight) * 100;
+
+    console.log('Progress calculation:', {
+        documentHeight,
+        scrollTop: contentWrapper.scrollTop,
+        clientHeight: contentWrapper.clientHeight,
+        scrollPosition,
+        scrollPercentage
+    });
     
     const progressElement = document.getElementById('scroll-progress');
     if (progressElement) {
@@ -197,3 +211,4 @@ window.addEventListener('load', function() {
         }
     })
 })
+
