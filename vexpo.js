@@ -169,63 +169,29 @@ function updateScrollProgress() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const agreeCheckbox = document.querySelector('.agree_checkbox');
-    if (agreeCheckbox) {
-        agreeCheckbox.style.setProperty("--custom-before-border", "solid 1px #ccc");
-    }
+let scrolledTermInfo = ""
 
-    const contentElement = document.getElementById('content');
-    if (contentElement) {
-        contentElement.onscroll = (event) => {
-            const heightOffset = 10;
-            const scrollPosition = event.target.clientHeight + event.target.scrollTop + heightOffset;
+window.addEventListener('load', function() {
+    const bodyHeight = document.body.scrollHeight
+    const windowHeight = window.innerHeight
+    const bottomPoint = bodyHeight - windowHeight
 
-            if (scrollPosition >= event.target.scrollHeight) {
-                const agreeButton = document.querySelector("#agree");
-                const agreeCheckbox = document.querySelector('.agree_checkbox');
-                
-                if (agreeButton) agreeButton.disabled = false;
-                if (agreeCheckbox) {
-                    agreeCheckbox.style.color = "black";
-                    agreeCheckbox.style.setProperty("--custom-before-border", "solid 1px black");
-                }
-            }
-        };
-    }
-
-    const agreeCheckBox = document.querySelector("#agree");
-    if (agreeCheckBox) {
-        agreeCheckBox.onchange = event => {
-            checkOnchange();
-        };
-    }
-
-    const startButton = document.querySelector("#start");
-    if (startButton) {
-        startButton.onclick = event => {
-            linkOnclicked();
-        };
-    }
-});
-
-function checkOnchange() {
-    const agreeCheckbox = document.querySelector("#agree");
-    const startButton = document.querySelector("#start");
-    
-    if (agreeCheckbox && startButton) {
-        if (agreeCheckbox.checked) {
-            startButton.disabled = false;
-        } else {
-            startButton.disabled = true;
-        }
-    }
-}
-
-function linkOnclicked() {
     var url = window.location.href;
-    var lang = url.match(".+/(.+?)\.[a-z]+([\?#;].*)?$")[1];
-    var tsVer = document.head.querySelector('[name=ts-ver][content]').content;
-    var ppVer = document.head.querySelector('[name=pp-ver][content]').content;
-    location.href = "?lang=" + lang + "&ts-ver=" + tsVer + "&pp-ver=" + ppVer;
-}
+    var tsVer = document.head.querySelector('[name=ts-ver][content]') ? document.head.querySelector('[name=ts-ver][content]').content : "";
+    var ppVer = document.head.querySelector('[name=pp-ver][content]') ? document.head.querySelector('[name=pp-ver][content]').content : "";
+    var cpVer = document.head.querySelector('[name=cp-ver][content]') ? document.head.querySelector('[name=cp-ver][content]').content : "";
+    var pdVer = document.head.querySelector('[name=pd-ver][content]') ? document.head.querySelector('[name=pd-ver][content]').content : "";
+    var tfVer = document.head.querySelector('[name=tf-ver][content]') ? document.head.querySelector('[name=tf-ver][content]').content : "";
+    var termInfo = url + "?ts-ver=" + tsVer + "&pp-ver=" + ppVer + "&cp-ver=" + cpVer + "&pd-ver=" + pdVer + "&tf-ver=" + tfVer;
+
+    if(bodyHeight <= windowHeight) {
+        scrolledTermInfo = termInfo
+    }
+
+    window.addEventListener('scroll', () => {
+        const currentPos = window.pageYOffset
+        if (bottomPoint <= currentPos) {
+            scrolledTermInfo = termInfo
+        }
+    })
+})
