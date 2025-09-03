@@ -1,3 +1,5 @@
+console.log('vexpo.js loaded successfully!');
+
 let isVRMode = false;
 let xrSession = null;
 let customScrollbar = null;
@@ -6,7 +8,10 @@ let isDragging = false;
 let dragStartY = 0;
 let scrollStartTop = 0;
 
-window.addEventListener('load', function() {    
+console.log('Variables declared');
+
+window.addEventListener('load', function() {   
+    console.log('Window load event fired');
     if (isMetaQuestBrowser()) {
         document.body.classList.add('meta-quest');
         setupScrollbar();
@@ -211,4 +216,5 @@ window.addEventListener('load', function() {
         }
     })
 })
+
 
