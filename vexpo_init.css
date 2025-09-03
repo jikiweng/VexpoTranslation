@@ -82,7 +82,7 @@ td, th {
 }
 
 #scroll-progress {
-      visibility: hidden;
+      visibility: visible;
       position: fixed;
       top: 10px;
       right: 0%;
@@ -160,3 +160,4 @@ td, th {
     transition: all 0.2s;
     top: 27px;
 }
+
