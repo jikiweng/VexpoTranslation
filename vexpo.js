@@ -1,7 +1,6 @@
 let isVRMode = false;
 let xrSession = null;
 let customScrollbar = null;
-let scrollWrapper = null;
 let isDragging = false;
 let dragStartY = 0;
 let scrollStartTop = 0;
@@ -29,9 +28,8 @@ function setupScrollbar() {
     if (!isMetaQuestBrowser()) return;
     
     const contentWrapper = document.querySelector('#content-wrapper');
-    scrollWrapper = document.querySelector('.simplebar-content-wrapper');
     
-    if (!contentWrapper || !scrollWrapper) {
+    if (!contentWrapper) {
         console.error('Required elements not found');
         return;
     }
@@ -81,24 +79,24 @@ function setupScrollbar() {
     document.addEventListener('touchend', endDrag);
     document.addEventListener('pointerup', endDrag);
     
-    scrollWrapper.addEventListener('scroll', updateHandlePosition);
+    contentWrapper.addEventListener('scroll', updateHandlePosition);
     updateHandlePosition();
     
-    scrollWrapper.addEventListener('scroll', updateScrollProgress);
+    contentWrapper.addEventListener('scroll', updateScrollProgress);
 }
 
 function scrollUp() {
-    if (!scrollWrapper || !isMetaQuestBrowser()) return;
+    if (!contentWrapper || !isMetaQuestBrowser()) return;
     const scrollStep = 200;
-    scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
+    contentWrapper.scrollTop = Math.max(0, contentWrapper.scrollTop - scrollStep);
     updateScrollProgress();
 }
 
 function scrollDown() {
-    if (!scrollWrapper || !isMetaQuestBrowser()) return;
+    if (!contentWrapper || !isMetaQuestBrowser()) return;
     const scrollStep = 200;
-    const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
-    scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
+    const maxScroll = contentWrapper.scrollHeight - contentWrapper.clientHeight;
+    contentWrapper.scrollTop = Math.min(maxScroll, contentWrapper.scrollTop + scrollStep);
     updateScrollProgress();
 }
 
@@ -107,23 +105,23 @@ function startDrag(e) {
     
     isDragging = true;
     dragStartY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY || 0;
-    scrollStartTop = scrollWrapper.scrollTop;
+    scrollStartTop = contentWrapper.scrollTop;
     customScrollbar.handle.classList.add('active');
     e.preventDefault();
 }
 
 function handleDrag(e) {
-    if (!isDragging || !scrollWrapper) return;
+    if (!isDragging || !contentWrapper) return;
     
     const currentY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY || 0;
     const deltaY = currentY - dragStartY;
     
-    const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+    const maxScroll = contentWrapper.scrollHeight - contentWrapper.clientHeight;
     const trackHeight = window.innerHeight - 27 - 27 - 40;
     const scrollRatio = maxScroll / trackHeight;
     
     const newScrollTop = Math.max(0, Math.min(maxScroll, scrollStartTop + deltaY * scrollRatio));
-    scrollWrapper.scrollTop = newScrollTop;
+    contentWrapper.scrollTop = newScrollTop;
     
     updateScrollProgress();
     e.preventDefault();
@@ -138,10 +136,10 @@ function endDrag() {
 }
 
 function updateHandlePosition() {
-    if (!customScrollbar || !scrollWrapper) return;
+    if (!customScrollbar || !contentWrapper) return;
     
-    const scrollTop = scrollWrapper.scrollTop;
-    const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
+    const scrollTop = contentWrapper.scrollTop;
+    const maxScroll = contentWrapper.scrollHeight - contentWrapper.clientHeight;
     
     const topBoundary = 27; 
     const bottomBoundary = window.innerHeight - 27; 
@@ -160,10 +158,10 @@ function updateHandlePosition() {
 }
 
 function updateScrollProgress() {
-    if (!scrollWrapper) return;
+    if (!contentWrapper) return;
     
-    const documentHeight = scrollWrapper.scrollHeight;
-    const scrollPosition = scrollWrapper.scrollTop + scrollWrapper.clientHeight;
+    const documentHeight = contentWrapper.scrollHeight;
+    const scrollPosition = contentWrapper.scrollTop + contentWrapper.clientHeight;
     const scrollPercentage = (scrollPosition / documentHeight) * 100;
     
     const progressElement = document.getElementById('scroll-progress');
@@ -197,5 +195,3 @@ window.addEventListener('load', function() {
             scrolledTermInfo = termInfo
         }
     })
-})
-
