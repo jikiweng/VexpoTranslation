@@ -1,5 +1,3 @@
-console.log('vexpo.js loaded successfully!');
-
 let isVRMode = false;
 let xrSession = null;
 let customScrollbar = null;
@@ -8,10 +6,7 @@ let isDragging = false;
 let dragStartY = 0;
 let scrollStartTop = 0;
 
-console.log('Variables declared');
-
-window.addEventListener('load', function() {   
-    console.log('Window load event fired');
+window.addEventListener('load', function() {    
     if (isMetaQuestBrowser()) {
         document.body.classList.add('meta-quest');
         setupScrollbar();
@@ -30,16 +25,13 @@ function isMetaQuestBrowser() {
     return isQuest;
 }
 
-function setupScrollbar() {
-    if (!isMetaQuestBrowser()) return;
-    
+function setupScrollbar() {    
     contentWrapper = document.querySelector('#content-wrapper');
     
     if (!contentWrapper) {
         console.error('Required elements not found');
         return;
     }
-    console.log('contentWrapper found:', contentWrapper);
     
     const scrollbarContainer = document.createElement('div');
     scrollbarContainer.className = 'custom-scrollbar';
@@ -90,27 +82,24 @@ function setupScrollbar() {
     updateHandlePosition();
     
     contentWrapper.addEventListener('scroll', updateScrollProgress);
-    updateScrollProgress();
 }
 
 function scrollUp() {
-    if (!contentWrapper || !isMetaQuestBrowser()) return;
+    if (!contentWrapper) return;
     const scrollStep = 200;
     contentWrapper.scrollTop = Math.max(0, contentWrapper.scrollTop - scrollStep);
     updateScrollProgress();
 }
 
 function scrollDown() {
-    if (!contentWrapper || !isMetaQuestBrowser()) return;
+    if (!contentWrapper) return;
     const scrollStep = 200;
     const maxScroll = contentWrapper.scrollHeight - contentWrapper.clientHeight;
     contentWrapper.scrollTop = Math.min(maxScroll, contentWrapper.scrollTop + scrollStep);
     updateScrollProgress();
 }
 
-function startDrag(e) {
-    if (!isMetaQuestBrowser()) return;
-    
+function startDrag(e) {    
     isDragging = true;
     dragStartY = e.clientY || (e.touches && e.touches[0].clientY) || e.pageY || 0;
     scrollStartTop = contentWrapper.scrollTop;
@@ -166,23 +155,11 @@ function updateHandlePosition() {
 }
 
 function updateScrollProgress() {
-    console.log('updateScrollProgress called');
-    if (!contentWrapper) {
-        console.error('contentWrapper not found in updateScrollProgress');
-        return;
-    }
+    if (!contentWrapper) return;
     
     const documentHeight = contentWrapper.scrollHeight;
     const scrollPosition = contentWrapper.scrollTop + contentWrapper.clientHeight;
     const scrollPercentage = (scrollPosition / documentHeight) * 100;
-
-    console.log('Progress calculation:', {
-        documentHeight,
-        scrollTop: contentWrapper.scrollTop,
-        clientHeight: contentWrapper.clientHeight,
-        scrollPosition,
-        scrollPercentage
-    });
     
     const progressElement = document.getElementById('scroll-progress');
     if (progressElement) {
@@ -216,5 +193,3 @@ window.addEventListener('load', function() {
         }
     })
 })
-
-
