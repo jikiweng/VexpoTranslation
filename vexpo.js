@@ -196,4 +196,4 @@ window.addEventListener('load', function() {
             scrolledTermInfo = termInfo
         }
     })
-}}
+})
