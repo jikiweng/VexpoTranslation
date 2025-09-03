@@ -91,6 +91,7 @@ function scrollUp() {
     if (!scrollWrapper || !isMetaQuestBrowser()) return;
     const scrollStep = 200;
     scrollWrapper.scrollTop = Math.max(0, scrollWrapper.scrollTop - scrollStep);
+    updateScrollProgress();
 }
 
 function scrollDown() {
@@ -98,6 +99,7 @@ function scrollDown() {
     const scrollStep = 200;
     const maxScroll = scrollWrapper.scrollHeight - scrollWrapper.clientHeight;
     scrollWrapper.scrollTop = Math.min(maxScroll, scrollWrapper.scrollTop + scrollStep);
+    updateScrollProgress();
 }
 
 function startDrag(e) {
@@ -123,6 +125,7 @@ function handleDrag(e) {
     const newScrollTop = Math.max(0, Math.min(maxScroll, scrollStartTop + deltaY * scrollRatio));
     scrollWrapper.scrollTop = newScrollTop;
     
+    updateScrollProgress();
     e.preventDefault();
 }
 
@@ -195,3 +198,4 @@ window.addEventListener('load', function() {
         }
     })
 })
+
