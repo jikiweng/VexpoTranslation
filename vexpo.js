@@ -63,8 +63,38 @@ function setupScrollbar() {
         handle: handle
     };
     
-    upArea.addEventListener('click', scrollUp);
-    downArea.addEventListener('click', scrollDown);
+    // 為 Meta Quest 添加多種事件監聽器
+    upArea.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        scrollUp();
+    });
+    upArea.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        scrollUp();
+    });
+    upArea.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        scrollUp();
+    });
+    
+    downArea.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        scrollDown();
+    });
+    downArea.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        scrollDown();
+    });
+    downArea.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        scrollDown();
+    });
     
     handle.addEventListener('mousedown', startDrag);
     handle.addEventListener('touchstart', startDrag);
@@ -87,16 +117,28 @@ function setupScrollbar() {
 function scrollUp() {
     if (!contentWrapper) return;
     const scrollStep = 200;
-    contentWrapper.scrollTop = Math.max(0, contentWrapper.scrollTop - scrollStep);
-    updateScrollProgress();
+    const oldScrollTop = contentWrapper.scrollTop;
+    
+    // 使用 requestAnimationFrame 確保在 Meta Quest 上正確執行
+    requestAnimationFrame(() => {
+        contentWrapper.scrollTop = Math.max(0, contentWrapper.scrollTop - scrollStep);
+        console.log('Scroll up:', oldScrollTop, '->', contentWrapper.scrollTop);
+        updateScrollProgress();
+    });
 }
 
 function scrollDown() {
     if (!contentWrapper) return;
     const scrollStep = 200;
     const maxScroll = contentWrapper.scrollHeight - contentWrapper.clientHeight;
-    contentWrapper.scrollTop = Math.min(maxScroll, contentWrapper.scrollTop + scrollStep);
-    updateScrollProgress();
+    const oldScrollTop = contentWrapper.scrollTop;
+    
+    // 使用 requestAnimationFrame 確保在 Meta Quest 上正確執行
+    requestAnimationFrame(() => {
+        contentWrapper.scrollTop = Math.min(maxScroll, contentWrapper.scrollTop + scrollStep);
+        console.log('Scroll down:', oldScrollTop, '->', contentWrapper.scrollTop);
+        updateScrollProgress();
+    });
 }
 
 function startDrag(e) {    
@@ -193,3 +235,4 @@ window.addEventListener('load', function() {
         }
     })
 })
+
