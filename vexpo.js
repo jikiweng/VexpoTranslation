@@ -9,7 +9,11 @@ let scrollStartTop = 0;
 window.addEventListener('load', function() {    
     if (isMetaQuestBrowser()) {
         document.body.classList.add('meta-quest');
-        setupScrollbar();
+        
+        // 等待 SimpleBar 完全初始化
+        setTimeout(() => {
+            setupScrollbar();
+        }, 200);
     } 
 });
 
@@ -26,12 +30,26 @@ function isMetaQuestBrowser() {
 }
 
 function setupScrollbar() {    
-    contentWrapper = document.querySelector('#content-wrapper');
+    const originalWrapper = document.querySelector('#content-wrapper');
     
-    if (!contentWrapper) {
+    if (!originalWrapper) {
         console.error('Required elements not found');
         return;
     }
+    
+    // 嘗試獲取 SimpleBar 的實際滾動容器
+    const simplebarContent = originalWrapper.querySelector('.simplebar-content-wrapper');
+    if (simplebarContent) {
+        contentWrapper = simplebarContent;
+        console.log('Using SimpleBar content wrapper for scrolling');
+    } else {
+        contentWrapper = originalWrapper;
+        console.log('Using original content wrapper for scrolling');
+    }
+    
+    console.log('Content wrapper:', contentWrapper);
+    console.log('Scroll height:', contentWrapper.scrollHeight);
+    console.log('Client height:', contentWrapper.clientHeight);
     
     const scrollbarContainer = document.createElement('div');
     scrollbarContainer.className = 'custom-scrollbar';
@@ -121,9 +139,14 @@ function scrollUp() {
     
     // 使用 requestAnimationFrame 確保在 Meta Quest 上正確執行
     requestAnimationFrame(() => {
-        contentWrapper.scrollTop = Math.max(0, contentWrapper.scrollTop - scrollStep);
-        console.log('Scroll up:', oldScrollTop, '->', contentWrapper.scrollTop);
-        updateScrollProgress();
+        const newScrollTop = Math.max(0, contentWrapper.scrollTop - scrollStep);
+        contentWrapper.scrollTop = newScrollTop;
+        console.log('Scroll up:', oldScrollTop, '->', newScrollTop);
+        
+        // 延遲更新進度，確保滾動完成
+        setTimeout(() => {
+            updateScrollProgress();
+        }, 50);
     });
 }
 
@@ -135,9 +158,14 @@ function scrollDown() {
     
     // 使用 requestAnimationFrame 確保在 Meta Quest 上正確執行
     requestAnimationFrame(() => {
-        contentWrapper.scrollTop = Math.min(maxScroll, contentWrapper.scrollTop + scrollStep);
-        console.log('Scroll down:', oldScrollTop, '->', contentWrapper.scrollTop);
-        updateScrollProgress();
+        const newScrollTop = Math.min(maxScroll, contentWrapper.scrollTop + scrollStep);
+        contentWrapper.scrollTop = newScrollTop;
+        console.log('Scroll down:', oldScrollTop, '->', newScrollTop);
+        
+        // 延遲更新進度，確保滾動完成
+        setTimeout(() => {
+            updateScrollProgress();
+        }, 50);
     });
 }
 
@@ -200,13 +228,29 @@ function updateScrollProgress() {
     if (!contentWrapper) return;
     
     const documentHeight = contentWrapper.scrollHeight;
-    const scrollPosition = contentWrapper.scrollTop + contentWrapper.clientHeight;
-    const scrollPercentage = (scrollPosition / documentHeight) * 100;
+    const clientHeight = contentWrapper.clientHeight;
+    const scrollTop = contentWrapper.scrollTop;
+    
+    // 正確的滾動進度計算
+    const maxScroll = documentHeight - clientHeight;
+    let scrollPercentage = 0;
+    
+    if (maxScroll > 0) {
+        scrollPercentage = (scrollTop / maxScroll) * 100;
+    }
     
     const progressElement = document.getElementById('scroll-progress');
     if (progressElement) {
         progressElement.textContent = Math.round(scrollPercentage) + '%';
     }
+    
+    console.log('Scroll progress:', {
+        scrollTop: scrollTop,
+        documentHeight: documentHeight,
+        clientHeight: clientHeight,
+        maxScroll: maxScroll,
+        percentage: Math.round(scrollPercentage) + '%'
+    });
 }
 
 let scrolledTermInfo = ""
@@ -235,4 +279,5 @@ window.addEventListener('load', function() {
         }
     })
 })
+
 
