@@ -11,40 +11,14 @@ window.addEventListener('load', function() {
     if (isMetaQuestBrowser()) {
         document.body.classList.add('meta-quest');
         
-        // 等待 SimpleBar 完全初始化
         setTimeout(() => {
-            setupScrollbar();
+            setupScrollbarForQuest();
         }, 200);
     } 
     else{
-        const originalWrapper = document.querySelector('#content-wrapper');
-        const scrollContent = originalWrapper.querySelector('.simplebar-content');
-        const bodyHeight = scrollContent.scrollHeight;
-
-        const windowHeight = window.innerHeight
-        const bottomPoint = bodyHeight - windowHeight
-        console.log("bodyHeight:", bodyHeight, "windowHeight:", windowHeight, "bottomPoint:", bottomPoint);
-        
-        
-        var url = window.location.href;
-        var tsVer = document.head.querySelector('[name=ts-ver][content]') ? document.head.querySelector('[name=ts-ver][content]').content : "";
-        var ppVer = document.head.querySelector('[name=pp-ver][content]') ? document.head.querySelector('[name=pp-ver][content]').content : "";
-        var cpVer = document.head.querySelector('[name=cp-ver][content]') ? document.head.querySelector('[name=cp-ver][content]').content : "";
-        var pdVer = document.head.querySelector('[name=pd-ver][content]') ? document.head.querySelector('[name=pd-ver][content]').content : "";
-        var tfVer = document.head.querySelector('[name=tf-ver][content]') ? document.head.querySelector('[name=tf-ver][content]').content : "";
-        var termInfo = url + "?ts-ver=" + tsVer + "&pp-ver=" + ppVer + "&cp-ver=" + cpVer + "&pd-ver=" + pdVer + "&tf-ver=" + tfVer;
-        
-        if(bodyHeight <= windowHeight) {
-            scrolledTermInfo = termInfo
-        }
-        
-        window.addEventListener('scroll', () => {
-            const currentPos = window.pageYOffset
-            if (bottomPoint <= currentPos) {
-                scrolledTermInfo = termInfo
-            }
-        })
-        console.log("scrolledTermInfo:", scrolledTermInfo);
+        setTimeout(() => {
+            setupScrollbarForNonVR();
+        }, 200);
     }
 });
 
@@ -60,7 +34,39 @@ function isMetaQuestBrowser() {
     return isQuest;
 }
 
-function setupScrollbar() {    
+function setupScrollbarForNonVR(){
+    const originalWrapper = document.querySelector('#content-wrapper');
+    const scrollContent = originalWrapper.querySelector('.simplebar-content');
+    const bodyHeight = scrollContent.scrollHeight;
+    const windowHeight = window.innerHeight
+    const bottomPoint = bodyHeight - windowHeight
+    console.log("bodyHeight:", bodyHeight, "windowHeight:", windowHeight, "bottomPoint:", bottomPoint);
+    
+    var url = window.location.href;
+    var tsVer = document.head.querySelector('[name=ts-ver][content]') ? document.head.querySelector('[name=ts-ver][content]').content : "";
+    var ppVer = document.head.querySelector('[name=pp-ver][content]') ? document.head.querySelector('[name=pp-ver][content]').content : "";
+    var cpVer = document.head.querySelector('[name=cp-ver][content]') ? document.head.querySelector('[name=cp-ver][content]').content : "";
+    var pdVer = document.head.querySelector('[name=pd-ver][content]') ? document.head.querySelector('[name=pd-ver][content]').content : "";
+    var tfVer = document.head.querySelector('[name=tf-ver][content]') ? document.head.querySelector('[name=tf-ver][content]').content : "";
+    var termInfo = url + "?ts-ver=" + tsVer + "&pp-ver=" + ppVer + "&cp-ver=" + cpVer + "&pd-ver=" + pdVer + "&tf-ver=" + tfVer;
+        
+    if(bodyHeight <= windowHeight) {
+        scrolledTermInfo = termInfo
+    }
+
+    const scrollContainer = originalWrapper.querySelector('.simplebar-content-wrapper');     
+    scrollContainer.addEventListener('scroll', () => {        
+        const scrollTop = scrollContainer.scrollTop;
+        console.log("currentPos: ",scrollTop );
+
+        if (bottomPoint <= scrollTop ) {
+            scrolledTermInfo = termInfo
+        }
+    })
+    console.log("scrolledTermInfo:", scrolledTermInfo);
+}
+
+function setupScrollbarForQuest() {    
     const originalWrapper = document.querySelector('#content-wrapper');
     
     if (!originalWrapper) {
