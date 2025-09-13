@@ -279,7 +279,7 @@ function updateScrollProgress() {
         scrollPercentage = (scrollTop / maxScroll) * 100;
     }
 
-    if(scrollPercentage >= 100) {
+    if(scrollPercentage >= 90) {
         scrolledTermInfo = "termInfo";
     }
     
@@ -297,3 +297,4 @@ function updateScrollProgress() {
     });
 
 }
+
