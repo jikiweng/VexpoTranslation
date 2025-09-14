@@ -276,16 +276,16 @@ function updateScrollProgress() {
     let scrollPercentage = 0;
     
     if (maxScroll > 0) {
-        scrollPercentage = (scrollTop / maxScroll) * 100;
+        scrollPercentage = Math.round((scrollTop / maxScroll) * 100);
     }
 
-    if(scrollPercentage >= 90) {
+    if(scrollPercentage >= 100) {
         scrolledTermInfo = "termInfo";
     }
     
     const progressElement = document.getElementById('scroll-progress');
     if (progressElement) {
-        progressElement.textContent = Math.round(scrollPercentage) + '%';
+        progressElement.textContent = scrollPercentage + '%';
     }
     
     console.log('Scroll progress:', {
@@ -293,7 +293,7 @@ function updateScrollProgress() {
         documentHeight: documentHeight,
         clientHeight: clientHeight,
         maxScroll: maxScroll,
-        percentage: Math.round(scrollPercentage) + '%'
+        percentage: scrollPercentage + '%'
     });
 
 }
