@@ -13,7 +13,7 @@ body {
 .content {
     max-width: 100%;
     max-height: 100%;
-    height: 90dh;
+    height: 90vh;
     margin: 0 auto;
     position: sticky;
     background-color: rgba(255, 255,255, 0.7);
@@ -110,7 +110,8 @@ td, th {
     position: fixed;
     right: 0;
     top: 0;
-    width: 20px; 
+    bottom: 0;
+    width: 19px; 
     height: 100vh;
     z-index: 1000;
     display: none; 
@@ -123,11 +124,11 @@ td, th {
 .scroll-track {
     position: absolute;
     top: 0;
-    width: 20px;
+    width: 19px;
     height: 100%;
     background:
         url('https://i.postimg.cc/d065ncRf/2025-07-11-201925.png') no-repeat top center,
-        url('https://i.postimg.cc/fWVh38Ds/2025-07-11-201948.png') no-repeat bottom center,
+        url('https://i.postimg.cc/4NkCxGxf/bottom.png') no-repeat bottom center,
         url('https://i.postimg.cc/hjJ3G3x3/2025-07-11-202015.png') repeat-y center;
     background-size: 100% 20px, 100% 20px, 100% auto;
 }
@@ -135,7 +136,7 @@ td, th {
 .scroll-up-area,
 .scroll-down-area {
     position: absolute;
-    width: 20px;
+    width: 19px;
     height: 20px;
     cursor: pointer;
     z-index: 1002;
@@ -151,7 +152,7 @@ td, th {
 
 .scroll-handle {
     position: absolute;
-    width: 20px;
+    width: 19px;
     height: 40px; 
     background: url('https://i.postimg.cc/J43BmkcJ/botton.png') no-repeat center;
     background-size: 80% 100%;
